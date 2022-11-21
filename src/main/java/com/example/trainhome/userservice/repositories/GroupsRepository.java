@@ -17,7 +17,8 @@ public interface GroupsRepository extends JpaRepository<Groups, Long> {
     @Query(value = "select * from groups where coach_id =: id", nativeQuery = true)
     List<Groups> getByCoachId(@Param("id") Long id);
 
-    Groups getById(@NonNull Long id);
+    @Query(value = "select * from groups where id =: id", nativeQuery = true)
+    Groups getById(@Param("id") Long id);
 
     @Modifying
     @Transactional
