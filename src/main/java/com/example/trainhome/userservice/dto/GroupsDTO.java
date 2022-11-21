@@ -7,9 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class GroupsDTO {
     private String name;
-    private Long coachId;
     private String sportSphereName;
     private Integer maxCount;
-    private Integer count;
     private Integer trainsLeft;
 }
