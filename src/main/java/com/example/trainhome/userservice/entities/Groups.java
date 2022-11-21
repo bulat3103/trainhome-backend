@@ -1,12 +1,14 @@
 package com.example.trainhome.userservice.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Data
 @Table(name = "groups")
+@NoArgsConstructor
 public class Groups {
     @Id
     @Column(name = "id", nullable = false)
@@ -31,4 +33,13 @@ public class Groups {
 
     @Column(name = "trains_left", nullable = false)
     private Integer trainsLeft;
+
+    public Groups(String name, Coach coachId, SportSphere sportSphereId, Integer maxCount, Integer count, Integer trainsLeft) {
+        this.name = name;
+        this.coachId = coachId;
+        this.sportSphereId = sportSphereId;
+        this.maxCount = maxCount;
+        this.count = count;
+        this.trainsLeft = trainsLeft;
+    }
 }
