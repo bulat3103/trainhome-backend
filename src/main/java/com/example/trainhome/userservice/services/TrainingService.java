@@ -1,7 +1,9 @@
 package com.example.trainhome.userservice.services;
 
 import com.example.trainhome.exceptions.InvalidDataException;
+import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.userservice.dto.TrainingDTO;
+import com.example.trainhome.userservice.entities.Groups;
 import com.example.trainhome.userservice.entities.Person;
 import com.example.trainhome.userservice.entities.Session;
 import com.example.trainhome.userservice.entities.Training;
@@ -44,13 +46,25 @@ public class TrainingService {
         if (!valid) throw new InvalidDataException(message.toString());
     }
 
-    public void addTraining(TrainingDTO trainingDTO) {
+    public Long addTraining(TrainingDTO trainingDTO) {
         Person person = ((Session) context.getAttribute("session")).getPerson();
-        trainingRepository.save(new Training(
+        Training training = new Training(
                 trainingDTO.getTrainingDate(),
                 coachRepository.getByPersonId(person.getId()),
                 trainingDTO.getLink(),
                 groupsRepository.getById(trainingDTO.getGroupId())
-        ));
+        );
+        trainingRepository.save(training);
+        return training.getId();
+    }
+
+    public void deleteTraining(Long id) throws WrongPersonException {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Training training = trainingRepository.getById(id);
+        long personId = training.getCoachId().getPersonId().getId();
+        if (personId != person.getId()) {
+            throw new WrongPersonException("INVALID PERSON!");
+        }
+        trainingRepository.deleteById(id);
     }
 }

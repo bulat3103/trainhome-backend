@@ -1,6 +1,7 @@
 package com.example.trainhome.userservice.controllers;
 
 import com.example.trainhome.exceptions.InvalidDataException;
+import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.userservice.dto.TrainingDTO;
 import com.example.trainhome.userservice.services.TrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,24 @@ public class TrainingController {
         Map<Object, Object> model = new HashMap<>();
         try {
             trainingService.validateTraining(trainingDTO);
-            trainingService.addTraining(trainingDTO);
+            Long id = trainingService.addTraining(trainingDTO);
+            model.put("id", id);
         } catch (InvalidDataException e) {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @DeleteMapping
+    public ResponseEntity<?> deleteTraining(@RequestParam("id") Long id) {
+        Map<Object, Object> model = new HashMap<>();
+        try {
+            trainingService.deleteTraining(id);
+        } catch (WrongPersonException e) {
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
         }
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
