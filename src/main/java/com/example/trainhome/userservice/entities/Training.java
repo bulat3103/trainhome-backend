@@ -1,6 +1,7 @@
 package com.example.trainhome.userservice.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "training")
+@NoArgsConstructor
 public class Training {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,4 +28,11 @@ public class Training {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "id")
     private Groups groupId;
+
+    public Training(Date trainingDate, Coach coachId, String link, Groups groupId) {
+        this.trainingDate = trainingDate;
+        this.coachId = coachId;
+        this.link = link;
+        this.groupId = groupId;
+    }
 }
