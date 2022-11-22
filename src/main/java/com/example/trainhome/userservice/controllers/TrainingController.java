@@ -45,4 +45,21 @@ public class TrainingController {
         }
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
+
+    @CrossOrigin
+    @PostMapping(value = "update", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> updateTraining(@RequestBody TrainingDTO trainingDTO) {
+        Map<Object, Object> model = new HashMap<>();
+        try {
+            trainingService.validateTraining(trainingDTO);
+            trainingService.updateTraining(trainingDTO);
+        } catch (InvalidDataException e) {
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
+        } catch (WrongPersonException e) {
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
+        }
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
 }

@@ -67,4 +67,14 @@ public class TrainingService {
         }
         trainingRepository.deleteById(id);
     }
+
+    public void updateTraining(TrainingDTO trainingDTO) throws WrongPersonException {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Training training = trainingRepository.getById(trainingDTO.getId());
+        long personId = training.getCoachId().getPersonId().getId();
+        if (personId != person.getId()) {
+            throw new WrongPersonException("INVALID PERSON!");
+        }
+        trainingRepository.updateTraining(trainingDTO.getId(), trainingDTO.getTrainingDate(), trainingDTO.getLink());
+    }
 }
