@@ -9,28 +9,33 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class PersonService{
-    private final PersonRepository personRepository;
 
     @Autowired
-    public PersonService(PersonRepository personRepository) {
-        this.personRepository = personRepository;
+    private PersonRepository personRepository;
+
+
+    public PersonDTO findByEmail(String email){
+        return PersonDTO.PersonToPersonDTO(personRepository.findByEmail(email));
     }
 
-    public void addPerson(Person person){
-        personRepository.save(person);
+    public PersonDTO findById(Long id){
+        return PersonDTO.PersonToPersonDTO(personRepository.findPersonById(id));
     }
 
-    public Person findByPersonEmail(String email){
-        return personRepository.findByEmail(email);
+    public Person findPersonById(Long id){
+        return personRepository.findPersonById(id);
     }
 
-    public Person update(PersonDTO personDTO) throws NoSuchPersonException{
-        Person person = findByPersonEmail(personDTO.getEmail());
+    public PersonDTO update(PersonDTO personDTO) throws NoSuchPersonException{
+        Person person = findPersonById(personDTO.getId());
         if(person == null) throw new NoSuchPersonException("Не найден пользователь с email:" + personDTO.getEmail());
-        person.setBirthday(personDTO.getBirthday());
-        person.setName(personDTO.getName());
-        person.setImage(personDTO.getImage());
-        person.setPhoneNumber(personDTO.getPhoneNumber());
-        return person;
+        return PersonDTO.PersonToPersonDTO(personRepository.updatePerson(person.getId(), person.getName(), person.getImage(),
+                person.getPhoneNumber(), person.getBirthday()));
+    }
+
+    public PersonDTO delete(PersonDTO personDTO) throws  NoSuchPersonException{
+        Person person = findPersonById(personDTO.getId());
+        if(person == null) throw new NoSuchPersonException("Не найден пользователь с email:" + personDTO.getEmail());
+        return PersonDTO.PersonToPersonDTO(personRepository.deletePerson(person.getId()));
     }
 }
