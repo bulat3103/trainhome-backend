@@ -27,4 +27,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
             "phoneNumber = :phone_number and birthday = :birthday where id = :id", nativeQuery = true)
     Person updatePerson(@Param("id") Long id, @Param("name") String name, @Param("image") String image,
                         @Param("phoneNumber") String phoneNumber, @Param("birthday") Date  birthday);
+                        
+    Person deletePerson(Person person);
+
+    @Query(value = "select * from person where id =: id", nativeQuery = true)
+    Person getById(@Param("id") Long id);
 }

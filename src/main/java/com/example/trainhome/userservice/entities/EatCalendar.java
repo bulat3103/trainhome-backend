@@ -1,6 +1,7 @@
 package com.example.trainhome.userservice.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "eat_calendar")
+@NoArgsConstructor
 public class EatCalendar {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,4 +28,11 @@ public class EatCalendar {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "person_id")
     private Coach coachId;
+
+    public EatCalendar(String info, Date date, Person personId, Coach coachId) {
+        this.info = info;
+        this.date = date;
+        this.personId = personId;
+        this.coachId = coachId;
+    }
 }
