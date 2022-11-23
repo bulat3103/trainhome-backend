@@ -1,5 +1,8 @@
 package com.example.trainhome.userservice.services;
 
+import com.example.trainhome.exceptions.InvalidDataException;
+import com.example.trainhome.exceptions.NoSuchPersonException;
+import com.example.trainhome.userservice.dto.AuthRequestDTO;
 import com.example.trainhome.userservice.dto.RegisterRequestDTO;
 import com.example.trainhome.userservice.dto.SportPriceDTO;
 import com.example.trainhome.userservice.entities.Person;
@@ -9,6 +12,7 @@ import com.example.trainhome.userservice.entities.compositeKeys.SportSphereCoach
 import com.example.trainhome.userservice.repositories.*;
 import com.example.trainhome.userservice.tokens.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,6 +41,9 @@ public class AuthService {
     @Autowired
     private SportSphereRepository sportSphereRepository;
 
+    @Autowired
+    private PersonRepository personRepository;
+
     public Person addNewPerson(RegisterRequestDTO requestDTO, String role) {
         Person newPerson = new Person();
         newPerson.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
@@ -50,6 +57,15 @@ public class AuthService {
         return newPerson;
     }
 
+    public String authorizePerson(AuthRequestDTO authRequestDTO) throws NoSuchPersonException, InvalidDataException {
+        Person personFromDB = findByEmail(authRequestDTO.getEmail());
+        if (personFromDB == null) throw new NoSuchPersonException("Такого пользователя не существует!");
+        else if (!passwordEncoder.matches(authRequestDTO.getPassword(), personFromDB.getPassword())) throw new InvalidDataException("Неправильный пароль!");
+        else {
+            return createSession(personFromDB);
+        }
+    }
+
     public void fillCoach(RegisterRequestDTO requestDTO, Long personId) {
         coachRepository.fillCoach(personId, requestDTO.getInfo(), requestDTO.getAchievements());
         for (SportPriceDTO dto : requestDTO.getListPrices()) {
@@ -60,22 +76,42 @@ public class AuthService {
         }
     }
 
-    public Person findByEmail(String email) {
-        return null;
+    private Person findByEmail(String email) {
+        return personRepository.findByEmail(email);
     }
 
-    public RegisterRequestDTO validateRegisterRequestDTO(RegisterRequestDTO requestDTO) {
-        if (requestDTO.getPassword() == null || requestDTO.getPassword().equals("") || requestDTO.getPassword().length() < 5) return null;
-        if (requestDTO.getName() == null || requestDTO.getName().equals("")) return null;
-        if (requestDTO.getPhoneNumber() == null || requestDTO.getPhoneNumber().equals("")
-                || !requestDTO.getPhoneNumber().matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) return null;
-        if (requestDTO.getEmail() == null || requestDTO.getEmail().equals("")
-                || !requestDTO.getEmail().matches("^[_A-Za-z\\d-\\\\+]+(\\\\.[_A-Za-z\\d-]+)*@[A-Za-z\\d-]+(\\\\.[A-Za-z\\d]+)*(\\\\.[A-Za-z]{2,})$")) return null;
-        if (requestDTO.getBirthday() == null || requestDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) return null;
-        for (SportPriceDTO dto: requestDTO.getListPrices()) {
-            if (dto.getPrice() <= 0) return null;
+    public void validateRegisterRequestDTO(RegisterRequestDTO requestDTO) throws InvalidDataException {
+        StringBuilder message = new StringBuilder();
+        boolean valid = true;
+        if (requestDTO.getPassword() == null || requestDTO.getPassword().equals("") || requestDTO.getPassword().length() < 5) {
+            message.append("Пароль должен состоять минимум из 5 символов!");
+            valid = false;
         }
-        return requestDTO;
+        if (requestDTO.getName() == null || requestDTO.getName().equals("")) {
+            message.append("ФИО не может быть пустым!");
+            valid = false;
+        }
+        if (requestDTO.getPhoneNumber() == null || requestDTO.getPhoneNumber().equals("")
+                || !requestDTO.getPhoneNumber().matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
+            message.append("Некорректный формат телефона!");
+            valid = false;
+        }
+        if (requestDTO.getEmail() == null || requestDTO.getEmail().equals("")
+                || !requestDTO.getEmail().matches("^[_A-Za-z\\d-\\\\+]+(\\\\.[_A-Za-z\\d-]+)*@[A-Za-z\\d-]+(\\\\.[A-Za-z\\d]+)*(\\\\.[A-Za-z]{2,})$")) {
+            message.append("Некорректный формат email!");
+            valid = false;
+        }
+        if (requestDTO.getBirthday() == null || requestDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) {
+            message.append("Некорректная дата рождения!");
+            valid = false;
+        }
+        for (SportPriceDTO dto: requestDTO.getListPrices()) {
+            if (dto.getPrice() <= 0) {
+                message.append("Стоимость занятий должна быть положительным числом!");
+                valid = false;
+            }
+        }
+        if (!valid) throw new InvalidDataException(message.toString());
     }
 
     public String createSession(Person person) {

@@ -2,13 +2,18 @@ package com.example.trainhome.userservice.controllers;
 
 
 import com.example.trainhome.exceptions.NoSuchPersonException;
+import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.userservice.entities.Person;
 import com.example.trainhome.userservice.services.PersonService;
 import com.example.trainhome.userservice.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.trainhome.userservice.dto.PersonDTO;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RestController
@@ -28,20 +33,30 @@ public class PersonController {
     @CrossOrigin
     @PostMapping("/update")
     ResponseEntity<?> updatePerson(@RequestBody PersonDTO  personDTO) {
+        Map<Object, Object> model = new HashMap<>();
         try{
-            return ResponseEntity.ok(personService.update(personDTO));
+            PersonDTO dto = personService.update(personDTO);
+            model.put("person", dto);
+            return new ResponseEntity<>(model, HttpStatus.OK);
         } catch (NoSuchPersonException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
+        } catch (WrongPersonException e) {
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @CrossOrigin
     @DeleteMapping
-    ResponseEntity<?> deletePerson(@RequestBody PersonDTO  personDTO) {
+    ResponseEntity<?> deletePerson(@RequestParam("id") Long id) {
+        Map<Object, Object> model = new HashMap<>();
         try{
-            return ResponseEntity.ok(personService.delete(personDTO));
+            personService.delete(id);
         } catch (NoSuchPersonException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            model.put("message", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }
