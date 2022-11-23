@@ -1,14 +1,15 @@
 package com.example.trainhome.userservice.services;
 
 import com.example.trainhome.exceptions.InvalidDataException;
+import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.userservice.dto.GroupsDTO;
+import com.example.trainhome.userservice.entities.GroupPerson;
 import com.example.trainhome.userservice.entities.Groups;
 import com.example.trainhome.userservice.entities.Person;
 import com.example.trainhome.userservice.entities.Session;
-import com.example.trainhome.userservice.repositories.CoachRepository;
-import com.example.trainhome.userservice.repositories.GroupsRepository;
-import com.example.trainhome.userservice.repositories.SportSphereRepository;
+import com.example.trainhome.userservice.entities.compositeKeys.GroupPersonId;
+import com.example.trainhome.userservice.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,12 @@ public class GroupsService {
 
     @Autowired
     private CoachRepository coachRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    @Autowired
+    private GroupPersonRepository groupPersonRepository;
 
     @Autowired
     private GroupsRepository groupsRepository;
@@ -50,6 +57,20 @@ public class GroupsService {
         if (!valid) throw new InvalidDataException(message.toString());
     }
 
+    public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Groups group = groupsRepository.getById(groupId);
+        long coachId = group.getCoachId().getPersonId().getId();
+        if (person.getId() != coachId) {
+            throw new WrongPersonException("Нет прав для этого действия!");
+        }
+        Person toAdd = personRepository.getById(personId);
+        if (toAdd == null) throw new NoSuchPersonException("Такого пользователя не существует!");
+        groupPersonRepository.save(new GroupPerson(
+                new GroupPersonId(group, toAdd)
+        ));
+    }
+
     public void addNewGroup(GroupsDTO groupsDTO) {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         groupsRepository.save(new Groups(
@@ -67,8 +88,18 @@ public class GroupsService {
         Groups group = groupsRepository.getById(id);
         long personId = group.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {
-            throw new WrongPersonException("INVALID PERSON!");
+            throw new WrongPersonException("Нет прав для этого действия!");
         }
         groupsRepository.deleteById(id);
+    }
+
+    public void updateGroup(GroupsDTO groupsDTO) throws WrongPersonException {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Groups group = groupsRepository.getById(groupsDTO.getId());
+        long personId = group.getCoachId().getPersonId().getId();
+        if (personId != person.getId()) {
+            throw new WrongPersonException("Нет прав для этого действия!");
+        }
+        groupsRepository.updateGroup(groupsDTO.getId(), group.getName(), groupsDTO.getMaxCount(), groupsDTO.getTrainsLeft());
     }
 }

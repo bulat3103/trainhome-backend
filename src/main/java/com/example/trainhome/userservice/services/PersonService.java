@@ -37,7 +37,7 @@ public class PersonService{
         Person personFromSession = ((Session) context.getAttribute("session")).getPerson();
         Person person = findPersonById(personDTO.getId());
         if ((long) personDTO.getId() != personFromSession.getId()) {
-            throw new WrongPersonException("У вас нет прав для этого действия!");
+            throw new WrongPersonException("Нет прав для этого действия!");
         }
         if(person == null) throw new NoSuchPersonException("Пользователь не найден!");
         return PersonDTO.PersonToPersonDTO(personRepository.updatePerson(person.getId(), person.getName(), person.getImage(),

@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -24,4 +25,9 @@ public interface GroupsRepository extends JpaRepository<Groups, Long> {
     @Transactional
     @Query(value = "delete from groups where id =: id", nativeQuery = true)
     void deleteById(@Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query(value = "update groups set name =: name, maxCount =: maxCount, trainsLeft =: trainsLeft where id =: id", nativeQuery = true)
+    int updateGroup(@Param("id") Long id, @Param("name") String name, @Param("maxCount") Integer maxCount, @Param("trainsLeft") Integer trainsLeft);
 }
