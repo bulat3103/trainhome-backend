@@ -1,0 +1,38 @@
+package com.example.trainhome.entities;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.util.Date;
+
+@Entity
+@Data
+@Table(name = "training")
+@NoArgsConstructor
+public class Training {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Long id;
+
+    @Column(name = "training_date", nullable = false, unique = true)
+    private Date trainingDate;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "person_id")
+    private Coach coachId;
+
+    @Column(name = "link", nullable = false)
+    private String link;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private Groups groupId;
+
+    public Training(Date trainingDate, Coach coachId, String link, Groups groupId) {
+        this.trainingDate = trainingDate;
+        this.coachId = coachId;
+        this.link = link;
+        this.groupId = groupId;
+    }
+}
