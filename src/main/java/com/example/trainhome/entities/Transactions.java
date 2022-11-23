@@ -1,13 +1,15 @@
 package com.example.trainhome.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.sql.Date;
 
 @Entity
 @Data
 @Table(name = "transactions")
+@NoArgsConstructor
 public class Transactions {
     @Id
     @Column(name = "id", nullable = false)
@@ -22,4 +24,15 @@ public class Transactions {
 
     @Column(name = "money", nullable = false)
     private int money;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private Person personId;
+
+    public Transactions(Date date, Coach coachId, int money, Person personId) {
+        this.date = date;
+        this.coachId = coachId;
+        this.money = money;
+        this.personId = personId;
+    }
 }

@@ -7,8 +7,8 @@ import java.sql.Date;
 
 @Data
 @AllArgsConstructor
-public class TransactionsDTO {
+public class TransactionsResponseDTO {
     private Date date;
-    private Long coachId;
     private Integer money;
+    private PersonDTO personDTO;
 }
