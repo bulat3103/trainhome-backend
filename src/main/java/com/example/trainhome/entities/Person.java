@@ -35,6 +35,6 @@ public class Person {
     private boolean sex;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "role_id")
     private Role roleId;
 }

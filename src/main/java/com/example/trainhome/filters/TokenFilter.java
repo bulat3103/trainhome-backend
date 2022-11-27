@@ -5,6 +5,7 @@ import com.example.trainhome.configuration.RoleConfig;
 import com.example.trainhome.entities.Session;
 import com.example.trainhome.repositories.SessionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
@@ -14,10 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @Component
+@Order(10)
 public class TokenFilter implements Filter {
 
     @Autowired
-    private SessionRepository repository;
+    private SessionRepository sessionRepository;
     @Autowired
     private PermissionConfig permissionConfig;
 
@@ -32,7 +34,7 @@ public class TokenFilter implements Filter {
             if (token == null) {
                 ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
             } else {
-                Session session = repository.getByToken(token);
+                Session session = sessionRepository.getByToken(token);
                 if (session == null || session.isExpired()) {
                     ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
                 } else {

@@ -18,11 +18,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class SportSphereCoachPriceId implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "coach_id")
     private Coach coachId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "sport_sphere_id")
     private SportSphere sportSphereId;
 
     public SportSphereCoachPriceId(Coach coachId, SportSphere sportSphereId) {

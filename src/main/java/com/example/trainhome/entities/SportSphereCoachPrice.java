@@ -8,7 +8,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "person")
+@Table(name = "sport_sphere_coach_price")
 @NoArgsConstructor
 public class SportSphereCoachPrice {
     @EmbeddedId

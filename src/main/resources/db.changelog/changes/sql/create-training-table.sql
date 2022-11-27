@@ -11,4 +11,5 @@ create table if not exists training
     unique (training_date, coach_id)
 );
 
-create index on training using hash (coach_id, group_id);
+create index on training using hash (coach_id);
+create index on training using hash (group_id);

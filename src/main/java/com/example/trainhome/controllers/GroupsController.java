@@ -19,9 +19,24 @@ public class GroupsController {
     @Autowired
     private GroupsService groupsService;
 
+    @CrossOrigin
+    @GetMapping(value = "/list", produces = "application/json")
+    public ResponseEntity<?> getAllGroups() {
+        Map<Object, Object> model = new HashMap<>();
+        model.put("groups", groupsService.getAllGroups());
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
 
     @CrossOrigin
-    @PostMapping(value = "/{id}/add", produces = "application/json")
+    @GetMapping(value = "/{id}", produces = "application/json")
+    public ResponseEntity<?> getPersonsInGroup(@PathVariable Long id) {
+        Map<Object, Object> model = new HashMap<>();
+        model.put("persons", groupsService.getPersonsInGroup(id));
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @PostMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> addPersonToGroup(@PathVariable Long id, @RequestParam("personId") Long personId) {
         Map<Object, Object> model = new HashMap<>();
         try {

@@ -19,14 +19,14 @@ public class Training {
     private Date trainingDate;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "coach_id")
     private Coach coachId;
 
     @Column(name = "link", nullable = false)
     private String link;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "group_id")
     private Groups groupId;
 
     public Training(Date trainingDate, Coach coachId, String link, Groups groupId) {

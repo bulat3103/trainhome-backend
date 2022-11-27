@@ -26,6 +26,6 @@ public interface GroupsRepository extends JpaRepository<Groups, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "update groups set name =: name, maxCount =: maxCount, trainsLeft =: trainsLeft where id =: id", nativeQuery = true)
+    @Query(value = "update groups set name =: name, max_count =: maxCount, trains_left =: trainsLeft where id =: id", nativeQuery = true)
     int updateGroup(@Param("id") Long id, @Param("name") String name, @Param("maxCount") Integer maxCount, @Param("trainsLeft") Integer trainsLeft);
 }

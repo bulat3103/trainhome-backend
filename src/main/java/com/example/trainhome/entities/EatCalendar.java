@@ -22,11 +22,11 @@ public class EatCalendar {
     private Date date;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "coach_id")
     private Coach coachId;
 
     public EatCalendar(String info, Date date, Person personId, Coach coachId) {

@@ -4,5 +4,7 @@ create table if not exists transactions
     date timestamp not null,
     coach_id bigserial not null
         references coach(person_id),
-    money int not null
+    money int not null,
+    person_id bigserial not null
+        references person(id)
 );
