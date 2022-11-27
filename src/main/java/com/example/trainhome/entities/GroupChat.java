@@ -13,7 +13,7 @@ public class GroupChat {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     @Column(name = "name", nullable = false)

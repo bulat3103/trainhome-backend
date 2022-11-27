@@ -14,11 +14,11 @@ public class ListMessage {
     private Long id;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "chat_id")
     private GroupChat chatId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     @Column(name = "content", nullable = false)

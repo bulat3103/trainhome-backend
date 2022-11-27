@@ -18,11 +18,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class GroupPersonId implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "group_id")
     private Groups groupId;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     public GroupPersonId(Groups groupId, Person personId) {

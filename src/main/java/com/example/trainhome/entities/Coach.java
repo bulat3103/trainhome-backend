@@ -6,11 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Data
-@Table(name = "person")
+@Table(name = "coach")
 public class Coach {
     @Id
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     @Column(name = "rating", nullable = false)

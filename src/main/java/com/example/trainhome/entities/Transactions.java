@@ -19,14 +19,14 @@ public class Transactions {
     private Date date;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "coach_id")
     private Coach coachId;
 
     @Column(name = "money", nullable = false)
     private int money;
 
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "id")
+    @JoinColumn(name = "person_id")
     private Person personId;
 
     public Transactions(Date date, Coach coachId, int money, Person personId) {

@@ -17,6 +17,7 @@ public class Session {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "person_id")
     private Person person;
 
     @Column(name = "token", nullable = false)
