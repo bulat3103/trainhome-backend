@@ -21,4 +21,6 @@
     <include file="changes/create-list-person-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-list-message-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-session-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-functions.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-triggers.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
