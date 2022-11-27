@@ -1,5 +1,6 @@
 package com.example.trainhome.services;
 
+import com.example.trainhome.dto.PersonDTO;
 import com.example.trainhome.entities.GroupPerson;
 import com.example.trainhome.entities.Groups;
 import com.example.trainhome.entities.Person;
@@ -15,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class GroupsService {
@@ -56,6 +59,40 @@ public class GroupsService {
             valid = false;
         }
         if (!valid) throw new InvalidDataException(message.toString());
+    }
+
+    public List<GroupsDTO> getAllGroups() {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        List<GroupsDTO> toReturn = new ArrayList<>();
+        List<Groups> list;
+        if (person.getRoleId().getName().equals("COACH")) {
+            list = groupsRepository.getByCoachId(person.getId());
+        } else {
+            list = new ArrayList<>();
+            List<GroupPerson> groupPersonList = groupPersonRepository.getAllByPersonId(person.getId());
+            for (GroupPerson gp : groupPersonList) {
+                list.add(gp.getId().getGroupId());
+            }
+        }
+        for (Groups group : list) {
+            toReturn.add(new GroupsDTO(
+                    group.getId(),
+                    group.getName(),
+                    group.getSportSphereId().getName(),
+                    group.getMaxCount(),
+                    group.getTrainsLeft()
+            ));
+        }
+        return toReturn;
+    }
+
+    public List<PersonDTO> getPersonsInGroup(Long groupId) {
+        List<Person> personList = personRepository.getAllPersonsInGroup(groupId);
+        List<PersonDTO> toReturn = new ArrayList<>();
+        for (Person person : personList) {
+            toReturn.add(PersonDTO.PersonToPersonDTO(person));
+        }
+        return toReturn;
     }
 
     public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException {
