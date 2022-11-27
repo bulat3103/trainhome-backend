@@ -10,7 +10,6 @@ import com.example.trainhome.entities.Person;
 import com.example.trainhome.entities.Session;
 import com.example.trainhome.entities.SportSphereCoachPrice;
 import com.example.trainhome.entities.compositeKeys.SportSphereCoachPriceId;
-import com.example.trainhome.userservice.repositories.*;
 import com.example.trainhome.tokens.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;

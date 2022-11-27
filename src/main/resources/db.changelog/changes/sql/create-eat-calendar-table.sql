@@ -11,4 +11,5 @@ create table if not exists eat_calendar
     unique (date, coach_id)
 );
 
-create index on eat_calendar using hash (person_id, coach_id);
+create index on eat_calendar using hash (person_id);
+create index on eat_calendar using hash (coach_id);

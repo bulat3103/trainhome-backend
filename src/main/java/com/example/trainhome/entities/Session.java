@@ -6,8 +6,8 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.Date;
 
-@Data
 @Entity
+@Data
 @Table(name = "session")
 @NoArgsConstructor
 public class Session {
@@ -17,7 +17,6 @@ public class Session {
     private Long id;
 
     @OneToOne
-    @Column(name = "person_id", nullable = false)
     private Person person;
 
     @Column(name = "token", nullable = false)

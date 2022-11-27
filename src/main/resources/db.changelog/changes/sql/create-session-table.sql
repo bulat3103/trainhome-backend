@@ -8,4 +8,5 @@ create table if not exists session
     expired boolean not null
 );
 
-create index on session using hash (person_id, token);
+create index on session using hash (person_id);
+create index on session using hash (token);

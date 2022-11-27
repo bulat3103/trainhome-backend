@@ -86,7 +86,12 @@ public class GroupsService {
     }
 
     public List<PersonDTO> getPersonsInGroup(Long groupId) {
-        return null;
+        List<Person> personList = personRepository.getAllPersonsInGroup(groupId);
+        List<PersonDTO> toReturn = new ArrayList<>();
+        for (Person person : personList) {
+            toReturn.add(PersonDTO.PersonToPersonDTO(person));
+        }
+        return toReturn;
     }
 
     public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException {

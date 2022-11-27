@@ -25,7 +25,7 @@ public interface EatCalendarRepository extends JpaRepository<EatCalendar, Long> 
     @Modifying
     @Transactional
     @Query(value = "update eat_calendar set date =: date, info =: info where id =: id", nativeQuery = true)
-    int updateRecommendation(@Param("id") Long id, @Param("date") Date date, @Param("info") String info);
+    void updateRecommendation(@Param("id") Long id, @Param("date") Date date, @Param("info") String info);
 
     @Query(value = "select * from eat_calendar where coach_id =: coachId and person_id =: personId and date =: date", nativeQuery = true)
     EatCalendar getByPersonIdAndCoachIdAndDate(@Param("coachId") Long coachId, @Param("personId") Long personId,

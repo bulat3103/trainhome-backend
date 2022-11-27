@@ -29,8 +29,9 @@ public class GroupsController {
 
     @CrossOrigin
     @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> getPersonInGroup(@PathVariable Long id) {
+    public ResponseEntity<?> getPersonsInGroup(@PathVariable Long id) {
         Map<Object, Object> model = new HashMap<>();
+        model.put("persons", groupsService.getPersonsInGroup(id));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
