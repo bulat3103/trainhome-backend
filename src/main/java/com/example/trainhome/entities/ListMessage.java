@@ -1,6 +1,7 @@
 package com.example.trainhome.entities;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.Date;
 @Entity
 @Data
 @Table(name = "list_message")
+@NoArgsConstructor
 public class ListMessage {
     @Id
     @Column(name = "id", nullable = false)
@@ -26,4 +28,11 @@ public class ListMessage {
 
     @Column(name = "date_create", nullable = false)
     private Date dateCreate;
+
+    public ListMessage(GroupChat chatId, Person personId , String content, Date dateCreate) {
+        this.personId = personId;
+        this.chatId = chatId;
+        this.content = content;
+        this.dateCreate = dateCreate;
+    }
 }
