@@ -10,7 +10,7 @@ import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.repositories.*;
 import com.example.trainhome.dto.GroupsDTO;
-import com.example.trainhome.userservice.repositories.*;
+import com.example.trainhome.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
