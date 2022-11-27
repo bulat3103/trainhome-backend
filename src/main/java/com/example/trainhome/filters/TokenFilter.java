@@ -24,16 +24,8 @@ public class TokenFilter implements Filter {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String[] unauthorized = permissionConfig.getAllowedUrls().get(RoleConfig.UNAUTHORIZED.toString());
-        boolean skipAuth = false;
         String requestUrl = request.getRequestURL().toString();
-        for (String url : unauthorized) {
-            if (requestUrl.matches(url)) {
-                skipAuth = true;
-                break;
-            }
-        }
-        if (skipAuth) {
+        if (permissionConfig.containsUrl(RoleConfig.UNAUTHORIZED.toString(), requestUrl)) {
             filterChain.doFilter(servletRequest, servletResponse);
         } else {
             String token = parseToken(request);
@@ -44,6 +36,12 @@ public class TokenFilter implements Filter {
                 if (session == null || session.isExpired()) {
                     ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
                 } else {
+                    if ((permissionConfig.containsUrl(RoleConfig.ROLE_COACH.toString(), requestUrl)
+                            && !session.getPerson().getRoleId().getName().equals(RoleConfig.ROLE_COACH.toString()))
+                            || (permissionConfig.containsUrl(RoleConfig.ROLE_CLIENT.toString(), requestUrl)
+                            && !session.getPerson().getRoleId().getName().equals(RoleConfig.ROLE_CLIENT.toString()))) {
+                        ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_FORBIDDEN, "You have no rights for this action.");
+                    }
                     servletRequest.setAttribute("session", session);
                     filterChain.doFilter(servletRequest, servletResponse);
                 }

@@ -25,4 +25,13 @@ public class PermissionConfig {
     }
 
     public HashMap<String, String[]> getAllowedUrls() {return allowedUrls;}
+
+    public boolean containsUrl(String type, String requestUrl) {
+        String[] urls = allowedUrls.get(type);
+        for (String url : urls) {
+            if (requestUrl.matches(url)) return true;
+        }
+        return false;
+    }
+
 }
