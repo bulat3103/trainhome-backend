@@ -1,6 +1,7 @@
 package com.example.trainhome.controllers;
 
 import com.example.trainhome.dto.GroupsDTO;
+import com.example.trainhome.entities.Groups;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
@@ -58,7 +59,7 @@ public class GroupsController {
         Map<Object, Object> model = new HashMap<>();
         try {
             groupsService.validateGroup(groupsDTO);
-            groupsService.addNewGroup(groupsDTO);
+            model.put("groupId", groupsService.addNewGroup(groupsDTO));
         } catch (InvalidDataException e) {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
