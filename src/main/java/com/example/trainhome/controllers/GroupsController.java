@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController(value = "groups")
+@RestController
+@RequestMapping("/groups")
 public class GroupsController {
 
     @Autowired

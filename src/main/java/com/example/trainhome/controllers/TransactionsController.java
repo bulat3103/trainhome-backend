@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController(value = "transaction")
+@RestController
+@RequestMapping("/transaction")
 public class TransactionsController {
 
     @Autowired

@@ -13,19 +13,19 @@ import java.util.List;
 @Repository
 public interface GroupsRepository extends JpaRepository<Groups, Long> {
 
-    @Query(value = "select * from groups where coach_id =: id", nativeQuery = true)
+    @Query(value = "select * from groups where coach_id = :id", nativeQuery = true)
     List<Groups> getByCoachId(@Param("id") Long id);
 
-    @Query(value = "select * from groups where id =: id", nativeQuery = true)
+    @Query(value = "select * from groups where id = :id", nativeQuery = true)
     Groups getById(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query(value = "delete from groups where id =: id", nativeQuery = true)
+    @Query(value = "delete from groups where id = :id", nativeQuery = true)
     void deleteById(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query(value = "update groups set name =: name, max_count =: maxCount, trains_left =: trainsLeft where id =: id", nativeQuery = true)
-    int updateGroup(@Param("id") Long id, @Param("name") String name, @Param("maxCount") Integer maxCount, @Param("trainsLeft") Integer trainsLeft);
+    @Query(value = "update groups set name = :name, max_count = :maxCount, trains_left = :trainsLeft where id = :id", nativeQuery = true)
+    void updateGroup(@Param("id") Long id, @Param("name") String name, @Param("maxCount") Integer maxCount, @Param("trainsLeft") Integer trainsLeft);
 }

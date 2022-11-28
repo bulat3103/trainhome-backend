@@ -18,11 +18,11 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
 
     @Modifying
     @Transactional
-    @Query(value = "delete from training where id =: id", nativeQuery = true)
+    @Query(value = "delete from training where id = :id", nativeQuery = true)
     void deleteById(@Param("id") Long id);
 
     @Modifying
     @Transactional
-    @Query(value = "update training set training_date =: trainingDate, link =: link where id =: id", nativeQuery = true)
+    @Query(value = "update training set training_date = :trainingDate, link = :link where id = :id", nativeQuery = true)
     int updateTraining(@Param("id") Long id, @Param("trainingDate") Date trainingDate, @Param("link") String link);
 }

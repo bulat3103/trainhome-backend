@@ -25,11 +25,11 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     @Modifying
     @Query(value = "update person set image = :image and name = :name and " +
-            "phone_number = :phone_number and birthday = :birthday where id = :id", nativeQuery = true)
+            "phone_number = :phoneNumber and birthday = :birthday where id = :id", nativeQuery = true)
     Person updatePerson(@Param("id") Long id, @Param("name") String name, @Param("image") String image,
                         @Param("phoneNumber") String phoneNumber, @Param("birthday") Date  birthday);
-                        
-    Person deletePerson(Person person);
+
+    void deleteById(Long id);
 
     @Query(value = "select * from person where id =: id", nativeQuery = true)
     Person getById(@Param("id") Long id);
