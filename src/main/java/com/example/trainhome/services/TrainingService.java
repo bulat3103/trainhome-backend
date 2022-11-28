@@ -49,7 +49,7 @@ public class TrainingService {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         Training training = new Training(
                 trainingDTO.getTrainingDate(),
-                coachRepository.getByPersonId(person.getId()),
+                coachRepository.getById(person.getId()),
                 trainingDTO.getLink(),
                 groupsRepository.getById(trainingDTO.getGroupId())
         );

@@ -34,7 +34,7 @@ public class AuthController {
             authService.validateRegisterRequestDTO(requestDTO);
             Person newPerson = authService.addNewPerson(requestDTO, RoleConfig.valueOf(role.toUpperCase()).toString());
             String token = authService.createSession(newPerson);
-            if (role.toUpperCase().equals(RoleConfig.ROLE_COACH.toString())) {
+            if (RoleConfig.valueOf(role.toUpperCase()).toString().equals(RoleConfig.ROLE_COACH.toString())) {
                 authService.fillCoach(requestDTO, newPerson.getId());
             }
             model.put("token", token);

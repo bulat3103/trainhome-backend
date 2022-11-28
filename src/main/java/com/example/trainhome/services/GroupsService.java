@@ -109,16 +109,16 @@ public class GroupsService {
         ));
     }
 
-    public void addNewGroup(GroupsDTO groupsDTO) {
+    public Long addNewGroup(GroupsDTO groupsDTO) {
         Person person = ((Session) context.getAttribute("session")).getPerson();
-        groupsRepository.save(new Groups(
+        return groupsRepository.save(new Groups(
                 groupsDTO.getName(),
-                coachRepository.getByPersonId(person.getId()),
+                coachRepository.getById(person.getId()),
                 sportSphereRepository.getByName(groupsDTO.getSportSphereName()),
-                0,
                 groupsDTO.getMaxCount(),
+                0,
                 groupsDTO.getTrainsLeft()
-        ));
+        )).getId();
     }
 
     public void deleteGroup(Long id) throws WrongPersonException {

@@ -18,7 +18,7 @@ public class PermissionConfig {
 
         };
         String[] coach = {
-
+                "./groups"
         };
         allowedUrls.put(RoleConfig.UNAUTHORIZED.toString(), unauthorized);
         allowedUrls.put(RoleConfig.ROLE_CLIENT.toString(), client);

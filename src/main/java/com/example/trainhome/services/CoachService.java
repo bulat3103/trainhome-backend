@@ -38,7 +38,7 @@ public class CoachService {
             List<SportSphereCoachPrice> list = sportSphereCoachPriceRepository.getByNameAndPrice(sportSphere.getId(),
                     coachSearchDTO.getMinPrice(), coachSearchDTO.getMaxPrice());
             for (SportSphereCoachPrice item : list) {
-                Coach coach = coachRepository.getByPersonId(item.getId().getCoachId().getPersonId().getId());
+                Coach coach = coachRepository.getById(item.getId().getCoachId().getPersonId().getId());
                 if (coach.getRating() >= coachSearchDTO.getMinRating() && coach.getRating() <= coachSearchDTO.getMaxRating()) {
                     toReturn.add(new CoachSearchResponseDTO(
                             PersonDTO.PersonToPersonDTO(personRepository.getById(coach.getPersonId().getId())),
