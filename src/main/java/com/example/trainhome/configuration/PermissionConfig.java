@@ -11,7 +11,8 @@ public class PermissionConfig {
     public PermissionConfig() {
         this.allowedUrls = new HashMap<>();
         String[] unauthorized = {
-
+                ".*/auth/register.*",
+                ".*/auth/login"
         };
         String[] client = {
 

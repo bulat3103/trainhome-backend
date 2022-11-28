@@ -16,10 +16,10 @@ import java.util.Date;
 public class TokenUtils {
 
     public static String generate(Person person) {
-        String in  = String.valueOf(Date.from(Instant.now())) +
+        String in = String.valueOf(Date.from(Instant.now())) +
                 Math.random() + person.getEmail() + person.getId() + person;
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA_256");
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
             byte[] bytes = md.digest(in.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeBytes(bytes, Base64.DONT_BREAK_LINES);
         } catch (NoSuchAlgorithmException e) {
