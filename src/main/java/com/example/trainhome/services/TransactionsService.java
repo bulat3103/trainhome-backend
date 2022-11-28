@@ -40,7 +40,7 @@ public class TransactionsService {
         }
         transactionsRepository.save(new Transactions(
                 transactionsDTO.getDate(),
-                coachRepository.getByPersonId(transactionsDTO.getCoachId()),
+                coachRepository.getById(transactionsDTO.getCoachId()),
                 transactionsDTO.getMoney(),
                 personRepository.getById(person.getId())
         ));

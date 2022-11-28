@@ -113,7 +113,7 @@ public class GroupsService {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         groupsRepository.save(new Groups(
                 groupsDTO.getName(),
-                coachRepository.getByPersonId(person.getId()),
+                coachRepository.getById(person.getId()),
                 sportSphereRepository.getByName(groupsDTO.getSportSphereName()),
                 0,
                 groupsDTO.getMaxCount(),

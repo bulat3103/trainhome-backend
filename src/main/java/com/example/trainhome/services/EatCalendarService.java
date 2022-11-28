@@ -78,7 +78,7 @@ public class EatCalendarService {
                 eatCalendarDTO.getInfo(),
                 eatCalendarDTO.getDate(),
                 personRepository.getById(eatCalendarDTO.getPersonId()),
-                coachRepository.getByPersonId(person.getId())
+                coachRepository.getById(person.getId())
         );
         eatCalendarRepository.save(eatCalendar);
         return eatCalendar.getId();

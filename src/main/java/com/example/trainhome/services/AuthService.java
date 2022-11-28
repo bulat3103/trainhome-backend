@@ -66,7 +66,7 @@ public class AuthService {
         coachRepository.fillCoach(personId, requestDTO.getInfo(), requestDTO.getAchievements());
         for (SportPriceDTO dto : requestDTO.getListPrices()) {
             sportSphereCoachPriceRepository.save(new SportSphereCoachPrice(
-                    new SportSphereCoachPriceId(coachRepository.getByPersonId(personId), sportSphereRepository.getByName(dto.getSportName())),
+                    new SportSphereCoachPriceId(coachRepository.getById(personId), sportSphereRepository.getByName(dto.getSportName())),
                     dto.getPrice()
             ));
         }
