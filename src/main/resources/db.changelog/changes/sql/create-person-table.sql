@@ -6,7 +6,7 @@ create table if not exists person
     image varchar(255),
     phone_number varchar(255) not null unique,
     email varchar(255) not null unique,
-    birthday date not null,
+    birthday timestamp not null,
     sex boolean not null,
     role_id bigserial not null
         references role(id)

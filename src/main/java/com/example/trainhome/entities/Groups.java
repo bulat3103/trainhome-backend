@@ -12,6 +12,7 @@ import javax.persistence.*;
 public class Groups {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", nullable = false)

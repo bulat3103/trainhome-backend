@@ -13,6 +13,7 @@ import java.sql.Date;
 public class Transactions {
     @Id
     @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "date", nullable = false)

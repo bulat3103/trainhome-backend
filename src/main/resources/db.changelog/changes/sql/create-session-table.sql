@@ -4,7 +4,7 @@ create table if not exists session
     person_id bigserial not null
         references person(id),
     token varchar(255) not null,
-    created_at date not null,
+    created_at timestamp not null,
     expired boolean not null
 );
 
