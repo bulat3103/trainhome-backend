@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Repository
@@ -31,6 +31,9 @@ public interface EatCalendarRepository extends JpaRepository<EatCalendar, Long> 
     EatCalendar getByPersonIdAndCoachIdAndDate(@Param("coachId") Long coachId, @Param("personId") Long personId,
                                                @Param("date") Date date);
 
-    @Query(value = "select * from eat_calendar where person_id =: personId and date =: date", nativeQuery = true)
+    @Query(value = "select * from get_person_eat_calendar(:personId, :date)", nativeQuery = true)
     List<EatCalendar> getAllByPersonIdAndDate(@Param("personId") Long personId, @Param("date") Date date);
+
+    @Query(value = "select date from eat_calendar where person_id = :personId group by date", nativeQuery = true)
+    List<Date> getAllDate(@Param("personId") Long personId);
 }

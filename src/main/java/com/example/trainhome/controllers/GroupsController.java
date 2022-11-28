@@ -40,6 +40,7 @@ public class GroupsController {
     @CrossOrigin
     @PostMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<?> addPersonToGroup(@PathVariable Long id, @RequestParam("personId") Long personId) {
+        //TODO написать триггер для изменения текущего count
         Map<Object, Object> model = new HashMap<>();
         try {
             groupsService.addPersonToGroup(id, personId);
