@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -43,7 +45,32 @@ public class GroupChatService {
         groupChatRepository.updateGroupChatName(groupChatDTO.getId(), groupChatDTO.getName());
     }
 
-    public void deletePersonInGroupChat(GroupChatDTO groupChatDTO){
+    public void deletePersonInGroupChat(GroupChatDTO groupChatDTO) throws InvalidDataException {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        if(groupChatRepository.findById(groupChatDTO.getId()) == null) throw new InvalidDataException("Группа не найдена");
+        groupChatRepository.deletePersonInGroupChat(groupChatDTO.getId(), person.getId());
+    }
 
+    public List<GroupChatDTO> getAllGroupChatByPersonId(){
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        List<GroupChat> GroupChat = groupChatRepository.getAllGroupChatByPersonId(person.getId());
+        List<GroupChatDTO> list = new ArrayList<>();
+        for(GroupChat groupChat : GroupChat){
+            list.add(new GroupChatDTO(groupChat.getId(),
+                    PersonDTO.PersonToPersonDTO(groupChat.getPersonId()),
+                    groupChat.getName()));
+        }
+        return list;
+    }
+
+    public List<PersonDTO> getAllPersonInGroupChat(GroupChatDTO groupChatDTO){
+        //TODO проверка, что пользователь состоит в этом чате
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        List<Person> personList = groupChatRepository.getAllPersonIdGroupChat(groupChatDTO.getId());
+        List<PersonDTO> list = new ArrayList<>();
+        for(Person personInList : personList){
+            list.add(PersonDTO.PersonToPersonDTO(personInList));
+        }
+        return list;
     }
 }
