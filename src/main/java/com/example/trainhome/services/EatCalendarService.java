@@ -58,7 +58,12 @@ public class EatCalendarService {
                 personId, null);
     }
 
-    public List<EatCalendarDTO> getPersonRecommendation(Date date) throws RecommendationNotFoundException {
+    public List<Date> getPersonDates() {
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        return eatCalendarRepository.getAllDate(person.getId());
+    }
+
+    public List<EatCalendarDTO> getPersonRecommendationByDate(Date date) throws RecommendationNotFoundException {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         List<EatCalendar> list = eatCalendarRepository.getAllByPersonIdAndDate(person.getId(), date);
         if (list.isEmpty()) {

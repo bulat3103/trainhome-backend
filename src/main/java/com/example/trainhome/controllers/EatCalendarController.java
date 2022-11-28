@@ -23,11 +23,19 @@ public class EatCalendarController {
     private EatCalendarService eatCalendarService;
 
     @CrossOrigin
+    @GetMapping(value = "list/dates", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getPersonsDates() {
+        Map<Object, Object> model = new HashMap<>();
+        model.put("dates", eatCalendarService.getPersonDates());
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
     @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getPersonsRecommendation(@RequestParam("date") Date date) {
+    public ResponseEntity<?> getPersonsRecommendationByDate(@RequestParam("date") Date date) {
         Map<Object, Object> model = new HashMap<>();
         try {
-            List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendation(date);
+            List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendationByDate(date);
             model.put("recommendations", list);
         } catch (RecommendationNotFoundException e) {
             model.put("message", e.getMessage());

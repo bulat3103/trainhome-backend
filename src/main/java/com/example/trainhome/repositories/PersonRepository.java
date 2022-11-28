@@ -31,9 +31,9 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
 
     void deleteById(Long id);
 
-    @Query(value = "select * from person where id =: id", nativeQuery = true)
+    @Query(value = "select * from person where id = :id", nativeQuery = true)
     Person getById(@Param("id") Long id);
 
-    @Query(value = "select get_all_person_in_group(:groupId) from person", nativeQuery = true)
+    @Query(value = "select * from get_all_person_in_group(:groupId)", nativeQuery = true)
     List<Person> getAllPersonsInGroup(@Param("groupId") Long groupId);
 }

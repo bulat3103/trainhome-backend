@@ -15,10 +15,10 @@ public class PermissionConfig {
                 ".*/auth/login"
         };
         String[] client = {
-
+                "./groups/list"
         };
         String[] coach = {
-                "./groups"
+                "./groups.*"
         };
         allowedUrls.put(RoleConfig.UNAUTHORIZED.toString(), unauthorized);
         allowedUrls.put(RoleConfig.ROLE_CLIENT.toString(), client);

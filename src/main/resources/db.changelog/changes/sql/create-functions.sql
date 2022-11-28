@@ -137,18 +137,18 @@ begin
 end
 $$ language plpgsql;
 
-create or replace function get_person_eat_calendar(personId integer) returns setof eat_calendar as
+create or replace function get_person_eat_calendar(personId integer, day date) returns setof eat_calendar as
 $$
 begin
-    return query select * from eat_calendar where person_id = personId;
+    return query select * from eat_calendar where person_id = personId and date = day;
     return;
 end
 $$ language plpgsql;
 
-create or replace function get_all_person_in_group(groupId integer) returns setof person as
+create or replace function get_all_person_in_group(groupId bigint) returns setof person as
 $$
 begin
-    return query select * from person
+    return query select person.* from person
                                    join group_person gp on person.id = gp.person_id
                  where gp.group_id = groupId;
     return;
