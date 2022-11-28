@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface ListMessagesRepository extends JpaRepository<ListMessage, Long> {
 
-    @Query(value = "select * from list_message where chat_id  = :id", nativeQuery = true)
+    @Query(value = "select * from get_all_messages_in_group_chat(:id)", nativeQuery = true)
     List<ListMessage> getListMessageByChatId(@Param("id") Long id);
 }
