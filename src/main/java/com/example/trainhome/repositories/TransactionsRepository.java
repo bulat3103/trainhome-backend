@@ -11,9 +11,9 @@ import java.util.List;
 @Repository
 public interface TransactionsRepository extends JpaRepository<Transactions, Long> {
 
-    @Query(value = "select * from transactions where coach_id =: id", nativeQuery = true)
+    @Query(value = "select * from transactions where coach_id = :id", nativeQuery = true)
     List<Transactions> getAllByCoachId(@Param("id") Long id);
 
-    @Query(value = "select sum(money) as total from transactions where coach_id =: id", nativeQuery = true)
+    @Query(value = "select sum(money) as total from transactions where coach_id = :id", nativeQuery = true)
     Integer getCoachMoney(@Param("id") Long id);
 }

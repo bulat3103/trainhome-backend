@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface GroupPersonRepository extends JpaRepository<GroupPerson, GroupPersonId> {
 
-    @Query(value = "select * from group_person where group_id =: id", nativeQuery = true)
+    @Query(value = "select * from group_person where group_id = :groupId", nativeQuery = true)
     List<GroupPerson> getAllByGroupId(@Param("groupId") Long id);
 
-    @Query(value = "select * from group_person where person_id =: id", nativeQuery = true)
+    @Query(value = "select * from group_person where person_id = :personId", nativeQuery = true)
     List<GroupPerson> getAllByPersonId(@Param("personId") Long id);
 }

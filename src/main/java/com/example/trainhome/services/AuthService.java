@@ -12,7 +12,6 @@ import com.example.trainhome.entities.SportSphereCoachPrice;
 import com.example.trainhome.entities.compositeKeys.SportSphereCoachPriceId;
 import com.example.trainhome.tokens.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
@@ -22,9 +21,7 @@ import java.time.LocalDate;
 @Service
 public class AuthService {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
+    private final String emailCheck="(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
     @Autowired
     private RoleRepository roleRepository;
 
@@ -45,7 +42,7 @@ public class AuthService {
 
     public Person addNewPerson(RegisterRequestDTO requestDTO, String role) {
         Person newPerson = new Person();
-        newPerson.setPassword(passwordEncoder.encode(requestDTO.getPassword()));
+        newPerson.setPassword(requestDTO.getPassword());
         newPerson.setName(requestDTO.getName());
         newPerson.setImage(requestDTO.getImage());
         newPerson.setPhoneNumber(requestDTO.getPhoneNumber());
@@ -53,13 +50,13 @@ public class AuthService {
         newPerson.setBirthday(requestDTO.getBirthday());
         newPerson.setSex(requestDTO.isSex());
         newPerson.setRoleId(roleRepository.findByName(role));
-        return newPerson;
+        return personRepository.save(newPerson);
     }
 
     public String authorizePerson(AuthRequestDTO authRequestDTO) throws NoSuchPersonException, InvalidDataException {
         Person personFromDB = findByEmail(authRequestDTO.getEmail());
         if (personFromDB == null) throw new NoSuchPersonException("Такого пользователя не существует!");
-        else if (!passwordEncoder.matches(authRequestDTO.getPassword(), personFromDB.getPassword())) throw new InvalidDataException("Неправильный пароль!");
+        else if (!authRequestDTO.getPassword().equals(personFromDB.getPassword())) throw new InvalidDataException("Неправильный пароль!");
         else {
             return createSession(personFromDB);
         }
@@ -96,7 +93,7 @@ public class AuthService {
             valid = false;
         }
         if (requestDTO.getEmail() == null || requestDTO.getEmail().equals("")
-                || !requestDTO.getEmail().matches("^[_A-Za-z\\d-\\\\+]+(\\\\.[_A-Za-z\\d-]+)*@[A-Za-z\\d-]+(\\\\.[A-Za-z\\d]+)*(\\\\.[A-Za-z]{2,})$")) {
+                || !requestDTO.getEmail().matches(emailCheck)) {
             message.append("Некорректный формат email!");
             valid = false;
         }
@@ -104,10 +101,12 @@ public class AuthService {
             message.append("Некорректная дата рождения!");
             valid = false;
         }
-        for (SportPriceDTO dto: requestDTO.getListPrices()) {
-            if (dto.getPrice() <= 0) {
-                message.append("Стоимость занятий должна быть положительным числом!");
-                valid = false;
+        if (requestDTO.getListPrices() != null) {
+            for (SportPriceDTO dto : requestDTO.getListPrices()) {
+                if (dto.getPrice() <= 0) {
+                    message.append("Стоимость занятий должна быть положительным числом!");
+                    valid = false;
+                }
             }
         }
         if (!valid) throw new InvalidDataException(message.toString());

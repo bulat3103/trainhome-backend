@@ -17,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestController(value = "auth")
+@RestController
+@RequestMapping("auth")
 public class AuthController {
     @Autowired
     private AuthService authService;

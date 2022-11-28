@@ -11,6 +11,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -28,5 +29,18 @@ public class SportSphereCoachPriceId implements Serializable {
     public SportSphereCoachPriceId(Coach coachId, SportSphere sportSphereId) {
         this.coachId = coachId;
         this.sportSphereId = sportSphereId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SportSphereCoachPriceId)) return false;
+        SportSphereCoachPriceId that = (SportSphereCoachPriceId) o;
+        return Objects.equals(getCoachId(), that.getCoachId()) && Objects.equals(getSportSphereId(), that.getSportSphereId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getCoachId(), getSportSphereId());
     }
 }

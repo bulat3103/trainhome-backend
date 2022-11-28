@@ -11,6 +11,7 @@ import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 @Getter
@@ -28,5 +29,17 @@ public class GroupPersonId implements Serializable {
     public GroupPersonId(Groups groupId, Person personId) {
         this.groupId = groupId;
         this.personId = personId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof GroupPersonId that)) return false;
+        return Objects.equals(getGroupId(), that.getGroupId()) && Objects.equals(getPersonId(), that.getPersonId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getGroupId(), getPersonId());
     }
 }

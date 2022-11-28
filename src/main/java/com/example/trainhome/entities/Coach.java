@@ -9,7 +9,10 @@ import javax.persistence.*;
 @Table(name = "coach")
 public class Coach {
     @Id
+    private Long id;
+
     @OneToOne(cascade = CascadeType.ALL)
+    @MapsId
     @JoinColumn(name = "person_id")
     private Person personId;
 

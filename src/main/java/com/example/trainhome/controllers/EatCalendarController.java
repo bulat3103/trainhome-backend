@@ -15,7 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@RestController(value = "calendar")
+@RestController
+@RequestMapping("/calendar")
 public class EatCalendarController {
 
     @Autowired
