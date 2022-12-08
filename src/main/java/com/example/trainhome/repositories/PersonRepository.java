@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.example.trainhome.entities.Person;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -24,9 +25,10 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     Person findPersonById(@Param("id") Long id);
 
     @Modifying
-    @Query(value = "update person set image = :image and name = :name and " +
+    @Transactional
+    @Query(value = "update person set name = :name and " +
             "phone_number = :phoneNumber and birthday = :birthday where id = :id", nativeQuery = true)
-    Person updatePerson(@Param("id") Long id, @Param("name") String name, @Param("image") String image,
+    Person updatePerson(@Param("id") Long id, @Param("name") String name,
                         @Param("phoneNumber") String phoneNumber, @Param("birthday") Date  birthday);
 
     void deleteById(Long id);

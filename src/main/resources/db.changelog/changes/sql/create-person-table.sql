@@ -3,7 +3,8 @@ create table if not exists person
     id bigserial primary key not null,
     password varchar(255) not null,
     name varchar(255) not null,
-    image varchar(255),
+    image_id bigserial not null
+        references image(id),
     phone_number varchar(255) not null unique,
     email varchar(255) not null unique,
     birthday timestamp not null,
