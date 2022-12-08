@@ -17,3 +17,7 @@ drop trigger if exists check_update_eat_calendar on eat_calendar;
 drop trigger if exists check_update_training_date on training;
 
 drop trigger if exists check_group_count_for_training on training;
+
+drop trigger if exists update_count_in_groups on group_person;
+
+drop trigger if exists update_count_delete_groups on group_person;

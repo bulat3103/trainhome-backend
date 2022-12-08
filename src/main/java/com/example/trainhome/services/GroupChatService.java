@@ -63,10 +63,17 @@ public class GroupChatService {
         return list;
     }
 
-    public List<PersonDTO> getAllPersonInGroupChat(GroupChatDTO groupChatDTO){
-        //TODO проверка, что пользователь состоит в этом чате
+    public List<PersonDTO> getAllPersonInGroupChat(GroupChatDTO groupChatDTO) throws WrongPersonException {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         List<Person> personList = groupChatRepository.getAllPersonIdGroupChat(groupChatDTO.getId());
+        Boolean flag = false;
+        for(Person per : personList){
+            if(person.equals(per)){
+                flag = true;
+                break;
+            }
+        }
+        if(!flag) throw new WrongPersonException("Нет прав для этого действия!");
         List<PersonDTO> list = new ArrayList<>();
         for(Person personInList : personList){
             list.add(PersonDTO.PersonToPersonDTO(personInList));

@@ -37,10 +37,10 @@ public class PersonController {
             model.put("person", dto);
             return new ResponseEntity<>(model, HttpStatus.OK);
         } catch (NoSuchPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
         }
     }
@@ -52,7 +52,7 @@ public class PersonController {
         try{
             personService.delete(id);
         } catch (NoSuchPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(model, HttpStatus.OK);

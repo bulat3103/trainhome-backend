@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class GroupsService {
@@ -95,7 +96,7 @@ public class GroupsService {
         return toReturn;
     }
 
-    public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException {
+    public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException, InvalidDataException {
         Person person = ((Session) context.getAttribute("session")).getPerson();
         Groups group = groupsRepository.getById(groupId);
         long coachId = group.getCoachId().getPersonId().getId();
@@ -104,6 +105,7 @@ public class GroupsService {
         }
         Person toAdd = personRepository.getById(personId);
         if (toAdd == null) throw new NoSuchPersonException("Такого пользователя не существует!");
+        if (Objects.equals(group.getCount(), group.getMaxCount())) throw new InvalidDataException("Группа заполнена");
         groupPersonRepository.save(new GroupPerson(
                 new GroupPersonId(group, toAdd)
         ));

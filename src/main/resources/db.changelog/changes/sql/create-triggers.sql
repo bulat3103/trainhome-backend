@@ -37,3 +37,11 @@ execute procedure check_update_training_date();
 create trigger check_group_count_for_training
     before insert on training for each row
 execute procedure check_group_count_for_training();
+
+create trigger update_count_in_groups
+    after insert on group_person for each row
+execute procedure update_count_in_groups();
+
+create trigger update_count_delete_groups
+    after delete on group_person for each row
+execute procedure update_count_delete_groups();
