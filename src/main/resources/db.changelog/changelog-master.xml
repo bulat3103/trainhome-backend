@@ -23,4 +23,5 @@
     <include file="changes/create-session-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-functions.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-triggers.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-image-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

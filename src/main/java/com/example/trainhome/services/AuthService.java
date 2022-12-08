@@ -1,5 +1,6 @@
 package com.example.trainhome.services;
 
+import com.example.trainhome.entities.Image;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.repositories.*;
@@ -40,11 +41,16 @@ public class AuthService {
     @Autowired
     private PersonRepository personRepository;
 
+    @Autowired
+    private ImageRepository imageRepository;
+
     public Person addNewPerson(RegisterRequestDTO requestDTO, String role) {
         Person newPerson = new Person();
         newPerson.setPassword(requestDTO.getPassword());
         newPerson.setName(requestDTO.getName());
-        newPerson.setImage(requestDTO.getImage());
+        Image image = new Image(requestDTO.getImage().getId(), requestDTO.getImage().getHex());
+        imageRepository.save(image);
+        newPerson.setImage(image);
         newPerson.setPhoneNumber(requestDTO.getPhoneNumber());
         newPerson.setEmail(requestDTO.getEmail());
         newPerson.setBirthday(requestDTO.getBirthday());

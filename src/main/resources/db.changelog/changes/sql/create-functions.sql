@@ -109,6 +109,20 @@ begin
 end
 $$ language plpgsql;
 
+create or replace function update_count_in_groups() returns trigger as
+$$
+begin
+    update groups set count = (select count from groups where new.group_id = id) + 1 where  new.group_id = id;
+end
+$$ language plpgsql;
+
+create or replace function update_count_delete_groups() returns trigger as
+$$
+begin
+    update groups set count = (select count from groups where new.group_id = id) - 1 where  new.group_id = id;
+end
+$$ language plpgsql;
+
 create or replace function coach_filtration(sportSphere varchar(255) default null, minPrice int default 0, maxPrice int default 100000, minRate int default 0, maxRate int default 5) returns setof coach as
 $$
 begin

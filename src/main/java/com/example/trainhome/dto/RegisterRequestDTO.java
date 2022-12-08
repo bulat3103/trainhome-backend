@@ -1,5 +1,6 @@
 package com.example.trainhome.dto;
 
+import com.example.trainhome.entities.Image;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 public class RegisterRequestDTO {
     private String password;
     private String name;
-    private String image;
+    private ImageDTO image;
     private String phoneNumber;
     private String email;
     private Date birthday;

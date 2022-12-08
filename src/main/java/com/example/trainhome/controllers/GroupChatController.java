@@ -78,8 +78,13 @@ public class GroupChatController {
     @GetMapping(value = "allchat", produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> getAllPersonInGroupChat(GroupChatDTO groupChatDTO){
         Map<Object, Object> model = new HashMap<>();
-        List<PersonDTO> toReturn = groupChatService.getAllPersonInGroupChat(groupChatDTO);
-        model.put("chat", toReturn);
+        try{
+            List<PersonDTO> toReturn = groupChatService.getAllPersonInGroupChat(groupChatDTO);
+            model.put("chat", toReturn);
+        } catch (WrongPersonException e) {
+            model.put("chat", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
+        }
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }

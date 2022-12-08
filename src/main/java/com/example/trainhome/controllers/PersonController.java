@@ -1,6 +1,8 @@
 package com.example.trainhome.controllers;
 
 
+import com.example.trainhome.dto.ImageDTO;
+import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.services.PersonService;
@@ -37,11 +39,24 @@ public class PersonController {
             model.put("person", dto);
             return new ResponseEntity<>(model, HttpStatus.OK);
         } catch (NoSuchPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @CrossOrigin
+    @PostMapping("/image")
+    ResponseEntity<?> updatePerson(@RequestBody ImageDTO imageDTO) {
+        Map<Object, Object> model = new HashMap<>();
+        try{
+            personService.updateImage(imageDTO);
+            return new ResponseEntity<>(model, HttpStatus.OK);
+        } catch (WrongPersonException | InvalidDataException e) {
+            model.put("person", e.getMessage());
+            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -52,7 +67,7 @@ public class PersonController {
         try{
             personService.delete(id);
         } catch (NoSuchPersonException e) {
-            model.put("message", e.getMessage());
+            model.put("person", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(model, HttpStatus.OK);

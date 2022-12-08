@@ -20,8 +20,9 @@ public class Person {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image")
-    private String image;
+    @OneToOne
+    @Column(name = "image_id")
+    private Image image;
 
     @Column(name = "phone_number", nullable = false, unique = true)
     private String phoneNumber;
