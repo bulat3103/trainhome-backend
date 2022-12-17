@@ -113,6 +113,7 @@ create or replace function update_count_in_groups() returns trigger as
 $$
 begin
     update groups set count = (select count from groups where new.group_id = id) + 1 where  new.group_id = id;
+    return new;
 end
 $$ language plpgsql;
 
@@ -120,6 +121,7 @@ create or replace function update_count_delete_groups() returns trigger as
 $$
 begin
     update groups set count = (select count from groups where new.group_id = id) - 1 where  new.group_id = id;
+    return new;
 end
 $$ language plpgsql;
 

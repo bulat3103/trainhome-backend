@@ -12,13 +12,38 @@ public class PermissionConfig {
         this.allowedUrls = new HashMap<>();
         String[] unauthorized = {
                 ".*/auth/register.*",
-                ".*/auth/login"
+                ".*/auth/login",
+                ".*/coach/list",
+
+                "./groups/list",
+                "./auth/logout",
+                ".*/coach/list",
+                ".*/calendar/list/dates",
+                ".*/calendar/list",
+                ".*/groups/list",
+
+                "./groups.*",
+                "./auth/logout",
+                ".*/coach/list",
+                ".*/calendar",
+                ".*/calendar/update",
+                ".*/groups.*"
         };
         String[] client = {
-                "./groups/list"
+                "./groups/list",
+                "./auth/logout",
+                ".*/coach/list",
+                ".*/calendar/list/dates",
+                ".*/calendar/list",
+                ".*/groups/list"
         };
         String[] coach = {
-                "./groups.*"
+                "./groups.*",
+                "./auth/logout",
+                ".*/coach/list",
+                ".*/calendar",
+                ".*/calendar/update",
+                ".*/groups.*"
         };
         allowedUrls.put(RoleConfig.UNAUTHORIZED.toString(), unauthorized);
         allowedUrls.put(RoleConfig.ROLE_CLIENT.toString(), client);

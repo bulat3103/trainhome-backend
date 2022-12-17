@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class GroupsDTO {
     private Long id;
     private String name;
+    private PersonDTO coach;
     private String sportSphereName;
     private Integer maxCount;
     private Integer trainsLeft;

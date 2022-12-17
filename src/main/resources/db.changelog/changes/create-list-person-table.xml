@@ -3,7 +3,7 @@
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <changeSet id="11" author="Bulat">
+    <changeSet id="12" author="Bulat">
         <sqlFile path="sql/create-list-person-table.sql" relativeToChangelogFile="true"/>
         <rollback>
             <sqlFile path="sql-rollback/drop-list-person-table.sql" relativeToChangelogFile="true"/>

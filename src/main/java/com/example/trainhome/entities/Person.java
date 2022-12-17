@@ -21,7 +21,7 @@ public class Person {
     private String name;
 
     @OneToOne
-    @Column(name = "image_id")
+    @JoinColumn(name = "image_id")
     private Image image;
 
     @Column(name = "phone_number", nullable = false, unique = true)

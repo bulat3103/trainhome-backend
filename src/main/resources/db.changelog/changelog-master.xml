@@ -8,6 +8,7 @@
     </preConditions>
 
     <include file="changes/create-role-table.xml" relativeToChangelogFile="true"/>
+    <include file="changes/create-image-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-person-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-coach-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-transactions-table.xml" relativeToChangelogFile="true"/>
@@ -23,5 +24,4 @@
     <include file="changes/create-session-table.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-functions.xml" relativeToChangelogFile="true"/>
     <include file="changes/create-triggers.xml" relativeToChangelogFile="true"/>
-    <include file="changes/create-image-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
