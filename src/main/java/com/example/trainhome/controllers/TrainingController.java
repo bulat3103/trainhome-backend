@@ -10,12 +10,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
 @RequestMapping("/trains")
 public class TrainingController {
-
     @Autowired
     private TrainingService trainingService;
 
@@ -61,6 +61,15 @@ public class TrainingController {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
         }
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping
+    public ResponseEntity<?> getPersonTraining(){
+        Map<Object, Object> model = new HashMap<>();
+        List<TrainingDTO> list =  trainingService.getAllTrainingByPerson();
+        model.put("trainings", list);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }
