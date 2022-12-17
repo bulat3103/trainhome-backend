@@ -48,7 +48,8 @@ public class AuthService {
         Person newPerson = new Person();
         newPerson.setPassword(requestDTO.getPassword());
         newPerson.setName(requestDTO.getName());
-        Image image = new Image(requestDTO.getImage().getId(), requestDTO.getImage().getHex());
+        Image image = new Image();
+        image.setHex(requestDTO.getImage().getHex());
         imageRepository.save(image);
         newPerson.setImage(image);
         newPerson.setPhoneNumber(requestDTO.getPhoneNumber());

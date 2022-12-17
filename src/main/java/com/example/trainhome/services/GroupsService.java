@@ -79,6 +79,7 @@ public class GroupsService {
             toReturn.add(new GroupsDTO(
                     group.getId(),
                     group.getName(),
+                    PersonDTO.PersonToPersonDTO(group.getCoachId().getPersonId()),
                     group.getSportSphereId().getName(),
                     group.getMaxCount(),
                     group.getTrainsLeft()
