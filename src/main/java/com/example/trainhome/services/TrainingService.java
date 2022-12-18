@@ -1,5 +1,6 @@
 package com.example.trainhome.services;
 
+import com.example.trainhome.dto.PersonDTO;
 import com.example.trainhome.dto.TrainingDTO;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.WrongPersonException;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class TrainingService {
@@ -26,6 +29,9 @@ public class TrainingService {
 
     @Autowired
     private CoachRepository coachRepository;
+
+    @Autowired
+    private PersonRepository personRepository;
 
     @Autowired
     private GroupsRepository groupsRepository;
@@ -77,5 +83,16 @@ public class TrainingService {
             throw new WrongPersonException("INVALID PERSON!");
         }
         trainingRepository.updateTraining(trainingDTO.getId(), trainingDTO.getTrainingDate(), trainingDTO.getLink());
+    }
+
+    public List<TrainingDTO> getAllTrainingByPerson(){
+        Person person = ((Session) context.getAttribute("session")).getPerson();
+        List<Training> trainingList = trainingRepository.getAllByPersonId(person.getId());
+        List<TrainingDTO> trainingDTOList = new ArrayList<>();
+        for (Training training : trainingList){
+            trainingDTOList.add(new TrainingDTO(training.getId(), training.getTrainingDate(), PersonDTO.PersonToPersonDTO(training.getCoachId().getPersonId()),
+                    training.getLink(), training.getGroupId().getId()));
+        }
+        return trainingDTOList;
     }
 }
