@@ -10,6 +10,7 @@ import com.example.trainhome.dto.PersonDTO;
 import com.example.trainhome.entities.Person;
 import com.example.trainhome.entities.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +25,9 @@ public class PersonService{
     @Autowired
     private ImageRepository imageRepository;
 
-    @Autowired
-    private HttpServletRequest context;
 
-
-    public PersonDTO findByEmail(String email){
-        return PersonDTO.PersonToPersonDTO(personRepository.findByEmail(email));
+    public Person findByEmail(String email){
+        return personRepository.findByEmail(email);
     }
 
     public PersonDTO findById(Long id){
@@ -41,7 +39,7 @@ public class PersonService{
     }
 
     public PersonDTO update(PersonDTO personDTO) throws NoSuchPersonException, WrongPersonException {
-        Person personFromSession = ((Session) context.getAttribute("session")).getPerson();
+        Person personFromSession = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Person person = findPersonById(personDTO.getId());
         if ((long) personDTO.getId() != personFromSession.getId()) {
             throw new WrongPersonException("Нет прав для этого действия!");
@@ -52,7 +50,7 @@ public class PersonService{
     }
 
     public void updateImage(ImageDTO imageDTO) throws InvalidDataException, WrongPersonException {
-        Person personFromSession = ((Session) context.getAttribute("session")).getPerson();
+        Person personFromSession = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(imageDTO.getHex() == null) throw new InvalidDataException("Фотография не может быть пустой");
         if(!Objects.equals(personFromSession.getImage().getId(), imageDTO.getId())) throw new WrongPersonException("Нет прав для этого действия!");
         imageRepository.updateById(imageDTO.getId(), imageDTO.getHex());

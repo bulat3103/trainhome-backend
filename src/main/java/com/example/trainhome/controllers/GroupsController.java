@@ -1,7 +1,6 @@
 package com.example.trainhome.controllers;
 
 import com.example.trainhome.dto.GroupsDTO;
-import com.example.trainhome.entities.Groups;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;

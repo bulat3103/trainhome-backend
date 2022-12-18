@@ -3,6 +3,7 @@ package com.example.trainhome.services;
 import com.example.trainhome.dto.TrainingDTO;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.WrongPersonException;
+import com.example.trainhome.repositories.PersonRepository;
 import com.example.trainhome.repositories.TrainingRepository;
 import com.example.trainhome.entities.Person;
 import com.example.trainhome.entities.Session;
@@ -10,6 +11,7 @@ import com.example.trainhome.entities.Training;
 import com.example.trainhome.repositories.CoachRepository;
 import com.example.trainhome.repositories.GroupsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +31,7 @@ public class TrainingService {
     private GroupsRepository groupsRepository;
 
     @Autowired
-    private HttpServletRequest context;
+    private PersonRepository personRepository;
 
     public void validateTraining(TrainingDTO trainingDTO) throws InvalidDataException {
         StringBuilder message = new StringBuilder();
@@ -46,7 +48,7 @@ public class TrainingService {
     }
 
     public Long addTraining(TrainingDTO trainingDTO) {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Training training = new Training(
                 trainingDTO.getTrainingDate(),
                 coachRepository.getById(person.getId()),
@@ -58,7 +60,7 @@ public class TrainingService {
     }
 
     public void deleteTraining(Long id) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Training training = trainingRepository.getById(id);
         long personId = training.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {
@@ -68,7 +70,7 @@ public class TrainingService {
     }
 
     public void updateTraining(TrainingDTO trainingDTO) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Training training = trainingRepository.getById(trainingDTO.getId());
         long personId = training.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {

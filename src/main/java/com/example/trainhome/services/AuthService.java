@@ -27,7 +27,7 @@ public class AuthService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private SessionRepository sessionRepository;
+    private TokenUtils tokenUtils;
 
     @Autowired
     private CoachRepository coachRepository;
@@ -65,7 +65,7 @@ public class AuthService {
         if (personFromDB == null) throw new NoSuchPersonException("Такого пользователя не существует!");
         else if (!authRequestDTO.getPassword().equals(personFromDB.getPassword())) throw new InvalidDataException("Неправильный пароль!");
         else {
-            return createSession(personFromDB);
+            return tokenUtils.generateToken(personFromDB.getEmail());
         }
     }
 
@@ -117,20 +117,5 @@ public class AuthService {
             }
         }
         if (!valid) throw new InvalidDataException(message.toString());
-    }
-
-    public String createSession(Person person) {
-        String token = TokenUtils.generate(person);
-        Session session = new Session(person, token, java.util.Date.from(Instant.now()), false);
-        sessionRepository.save(session);
-        return token;
-    }
-
-    public void closeSession(Session session) {
-        sessionRepository.setExpirationById(session.getId());
-    }
-
-    public void closeAllPersonSessions(Session session) {
-        sessionRepository.setExpirationByPerson(session.getPerson().getId());
     }
 }

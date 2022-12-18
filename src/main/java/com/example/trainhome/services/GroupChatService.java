@@ -9,7 +9,9 @@ import com.example.trainhome.entities.Session;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.repositories.GroupChatRepository;
+import com.example.trainhome.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,10 +29,10 @@ public class GroupChatService {
     private PersonService personService;
 
     @Autowired
-    private HttpServletRequest context;
+    private PersonRepository personRepository;
 
     public Long createGroupChat(GroupChatDTO groupChatDTO) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(!Objects.equals(person.getId(), groupChatDTO.getPersonDTO().getId())) throw new WrongPersonException("Нет прав для этого действия!");
         GroupChat groupChat = new GroupChat(personService.findPersonById(groupChatDTO.getPersonDTO().getId()),
                 groupChatDTO.getName());
@@ -39,20 +41,20 @@ public class GroupChatService {
     }
 
     public void updateGroupChat(GroupChatDTO groupChatDTO) throws WrongPersonException, InvalidDataException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(!Objects.equals(person.getId(), groupChatDTO.getPersonDTO().getId())) throw new WrongPersonException("Нет прав для этого действия!");
         if(groupChatDTO.getName().length() == 0 || groupChatDTO.getName() == null) throw new InvalidDataException("Название группы не может быть пустым");
         groupChatRepository.updateGroupChatName(groupChatDTO.getId(), groupChatDTO.getName());
     }
 
     public void deletePersonInGroupChat(GroupChatDTO groupChatDTO) throws InvalidDataException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(groupChatRepository.findById(groupChatDTO.getId()) == null) throw new InvalidDataException("Группа не найдена");
         groupChatRepository.deletePersonInGroupChat(groupChatDTO.getId(), person.getId());
     }
 
     public List<GroupChatDTO> getAllGroupChatByPersonId(){
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<GroupChat> GroupChat = groupChatRepository.getAllGroupChatByPersonId(person.getId());
         List<GroupChatDTO> list = new ArrayList<>();
         for(GroupChat groupChat : GroupChat){
@@ -64,7 +66,7 @@ public class GroupChatService {
     }
 
     public List<PersonDTO> getAllPersonInGroupChat(GroupChatDTO groupChatDTO) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Person> personList = groupChatRepository.getAllPersonIdGroupChat(groupChatDTO.getId());
         Boolean flag = false;
         for(Person per : personList){

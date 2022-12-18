@@ -2,6 +2,7 @@ package com.example.trainhome.controllers;
 
 
 import com.example.trainhome.dto.ImageDTO;
+import com.example.trainhome.entities.Person;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
@@ -26,8 +27,8 @@ public class PersonController {
     @CrossOrigin
     @GetMapping
     ResponseEntity<?> getPersonByEmail(@RequestBody String email) {
-        PersonDTO person = personService.findByEmail(email);
-        return ResponseEntity.ok(person);
+        Person person = personService.findByEmail(email);
+        return ResponseEntity.ok(PersonDTO.PersonToPersonDTO(person));
     }
 
     @CrossOrigin

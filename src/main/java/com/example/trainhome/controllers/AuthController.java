@@ -8,6 +8,7 @@ import com.example.trainhome.dto.AuthRequestDTO;
 import com.example.trainhome.dto.RegisterRequestDTO;
 import com.example.trainhome.entities.Person;
 import com.example.trainhome.entities.Session;
+import com.example.trainhome.tokens.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +22,9 @@ import java.util.Map;
 @RequestMapping("auth")
 public class AuthController {
     @Autowired
-    private AuthService authService;
-
+    private TokenUtils tokenUtils;
     @Autowired
-    private HttpServletRequest context;
+    private AuthService authService;
 
     @CrossOrigin
     @PostMapping(value = "register", produces = "application/json")
@@ -33,7 +33,7 @@ public class AuthController {
         try {
             authService.validateRegisterRequestDTO(requestDTO);
             Person newPerson = authService.addNewPerson(requestDTO, RoleConfig.valueOf(role.toUpperCase()).toString());
-            String token = authService.createSession(newPerson);
+            String token = tokenUtils.generateToken(newPerson.getEmail());
             if (RoleConfig.valueOf(role.toUpperCase()).toString().equals(RoleConfig.ROLE_COACH.toString())) {
                 authService.fillCoach(requestDTO, newPerson.getId());
             }
@@ -57,14 +57,5 @@ public class AuthController {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }
-    }
-
-    @CrossOrigin
-    @PostMapping(value = "logout", produces = "application/json")
-    public ResponseEntity<?> logout() {
-        Map<Object, Object> model = new HashMap<>();
-        Session session = (Session) (context.getAttribute("session"));
-        authService.closeSession(session);
-        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }
