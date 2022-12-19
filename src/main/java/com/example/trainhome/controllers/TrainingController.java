@@ -16,6 +16,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/trains")
 public class TrainingController {
+
     @Autowired
     private TrainingService trainingService;
 
