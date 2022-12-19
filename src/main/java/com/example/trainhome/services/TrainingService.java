@@ -1,5 +1,6 @@
 package com.example.trainhome.services;
 
+import com.example.trainhome.dto.GroupsDTO;
 import com.example.trainhome.dto.PersonDTO;
 import com.example.trainhome.dto.TrainingDTO;
 import com.example.trainhome.exceptions.InvalidDataException;
@@ -36,9 +37,6 @@ public class TrainingService {
     @Autowired
     private GroupsRepository groupsRepository;
 
-    @Autowired
-    private PersonRepository personRepository;
-
     public void validateTraining(TrainingDTO trainingDTO) throws InvalidDataException {
         StringBuilder message = new StringBuilder();
         boolean valid = true;
@@ -59,7 +57,7 @@ public class TrainingService {
                 trainingDTO.getTrainingDate(),
                 coachRepository.getById(person.getId()),
                 trainingDTO.getLink(),
-                groupsRepository.getById(trainingDTO.getGroupId())
+                groupsRepository.getById(trainingDTO.getGroupsDTO().getId())
         );
         trainingRepository.save(training);
         return training.getId();
@@ -86,12 +84,17 @@ public class TrainingService {
     }
 
     public List<TrainingDTO> getAllTrainingByPerson(){
-        Person person = ((Session) context.getAttribute("session")).getPerson();
-        List<Training> trainingList = trainingRepository.getAllByPersonId(person.getId());
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+        List<Training> trainingList;
+        if (person.getRoleId().getName().equals("COACH")) {
+            trainingList = trainingRepository.getAllByCoachId(person.getId());
+        } else {
+            trainingList = trainingRepository.getAllByPersonId(person.getId());
+        }
         List<TrainingDTO> trainingDTOList = new ArrayList<>();
         for (Training training : trainingList){
             trainingDTOList.add(new TrainingDTO(training.getId(), training.getTrainingDate(), PersonDTO.PersonToPersonDTO(training.getCoachId().getPersonId()),
-                    training.getLink(), training.getGroupId().getId()));
+                    training.getLink(), GroupsDTO.GroupsToGroupsDTO(training.getGroupId())));
         }
         return trainingDTOList;
     }

@@ -14,5 +14,5 @@ public class TrainingDTO {
     private PersonDTO personDTO;
     private String link;
     @NonNull
-    private Long groupId;
+    private GroupsDTO groupsDTO;
 }

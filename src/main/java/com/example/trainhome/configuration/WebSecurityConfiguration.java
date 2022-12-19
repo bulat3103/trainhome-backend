@@ -30,8 +30,8 @@ public class WebSecurityConfiguration implements WebMvcConfigurer {
                 .and()
                 .authorizeRequests()
                 .antMatchers("*/auth/login", "*/auth/register.*", "*/coach/list").permitAll()
-                .antMatchers("*/groups/list", "/*.js", "/*.json").hasRole("CLIENT")
-                .antMatchers("*/calendar/update", "/*.js", "/*.json").hasRole("COACH")
+                .antMatchers("*/groups/list", "/*.js", "/*.json", "*/trains/list").hasRole("CLIENT")
+                .antMatchers("*/groups*", "*/calendar/update", "/*.js", "/*.json", "*/trains/list").hasRole("COACH")
                 .and()
                 .addFilterBefore(tokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();

@@ -22,6 +22,9 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
 
     @Query(value = "select * from training where training_date = now()", nativeQuery = true)
     List<Training> getAllByToday();
+    
+    @Query(value = "select * from training where coach_id = :id", nativeQuery = true)
+    List<Training> getAllByCoachId(@Param("id") Long id);
 
     @Modifying
     @Transactional

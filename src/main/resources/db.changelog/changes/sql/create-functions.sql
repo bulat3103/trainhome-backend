@@ -143,17 +143,17 @@ begin
 end
 $$ language plpgsql;
 
-create or replace function get_person_trainings(personId integer) returns setof training as
+create or replace function get_person_trainings(personId bigint) returns setof training as
 $$
 begin
-    return query select * from training
+    return query select training.id, training.training_date, training.coach_id, training.link, training.group_id from training
                                    join group_person gp on training.group_id = gp.group_id
                  where gp.person_id = personId;
     return;
 end
 $$ language plpgsql;
 
-create or replace function get_person_eat_calendar(personId integer, day date) returns setof eat_calendar as
+create or replace function get_person_eat_calendar(personId bigint, day date) returns setof eat_calendar as
 $$
 begin
     return query select * from eat_calendar where person_id = personId and date = day;
@@ -171,7 +171,7 @@ begin
 end
 $$ language plpgsql;
 
-create or replace function get_all_person_in_group_chat(chatId integer) returns setof person as
+create or replace function get_all_person_in_group_chat(chatId bigint) returns setof person as
 $$
 begin
     return query select * from person
@@ -181,7 +181,7 @@ begin
 end
 $$ language plpgsql;
 
-create or replace function get_all_messages_in_group_chat(chatId integer) returns setof list_message as
+create or replace function get_all_messages_in_group_chat(chatId bigint) returns setof list_message as
 $$
 begin
     return query select * from list_message where chat_id = chatId;
