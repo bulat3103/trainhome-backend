@@ -65,7 +65,7 @@ public class TrainingController {
     }
 
     @CrossOrigin
-    @GetMapping
+    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> getPersonTraining(){
         Map<Object, Object> model = new HashMap<>();
         List<TrainingDTO> list =  trainingService.getAllTrainingByPerson();

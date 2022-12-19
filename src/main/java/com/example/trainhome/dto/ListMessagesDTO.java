@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 public class ListMessagesDTO {
     private Long id;
-    private GroupChatDTO groupChatDTO;
+    private Long groupChatId;
     private PersonDTO personDTO;
     private String content;
     private Date dateCreate;

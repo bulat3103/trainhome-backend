@@ -37,7 +37,7 @@ public class ListMessagesService {
         List<ListMessage> listMessageList = listMessagesRepository.getListMessageByChatId(groupChatDTO.getId());
         List<ListMessagesDTO> listToReturn = new ArrayList<>();
         for(ListMessage listMessage : listMessageList){
-            listToReturn.add(new ListMessagesDTO(listMessage.getId(), groupChatDTO, PersonDTO.PersonToPersonDTO(listMessage.getPersonId()),
+            listToReturn.add(new ListMessagesDTO(listMessage.getId(), groupChatDTO.getId(), PersonDTO.PersonToPersonDTO(listMessage.getPersonId()),
                     listMessage.getContent(), listMessage.getDateCreate()));
         }
         return listToReturn;
@@ -46,7 +46,7 @@ public class ListMessagesService {
     public Long createListMessages(ListMessagesDTO listMessagesDTO) throws WrongPersonException{
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(person.getId() != listMessagesDTO.getPersonDTO().getId()) throw new WrongPersonException("Нет прав для этого действия!");
-        ListMessage listMessage = new ListMessage(groupChatRepository.findGroupChatById(listMessagesDTO.getGroupChatDTO().getId()), personRepository.getById(person.getId()),
+        ListMessage listMessage = new ListMessage(groupChatRepository.findGroupChatById(listMessagesDTO.getGroupChatId()), personRepository.getById(person.getId()),
                 listMessagesDTO.getContent(), listMessagesDTO.getDateCreate());
         listMessagesRepository.save(listMessage);
         return listMessage.getId();
