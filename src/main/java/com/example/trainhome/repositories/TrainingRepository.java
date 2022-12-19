@@ -20,6 +20,9 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     @Query(value = "select * from get_person_trainings(:id)", nativeQuery = true)
     List<Training> getAllByPersonId(@Param("id") Long id);
 
+    @Query(value = "select * from training where training_date = now()", nativeQuery = true)
+    List<Training> getAllByToday();
+
     @Modifying
     @Transactional
     @Query(value = "delete from training where id = :id", nativeQuery = true)
