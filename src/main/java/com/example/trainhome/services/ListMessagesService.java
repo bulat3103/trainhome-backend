@@ -12,6 +12,7 @@ import com.example.trainhome.repositories.GroupChatRepository;
 import com.example.trainhome.repositories.ListMessagesRepository;
 import com.example.trainhome.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,9 +32,6 @@ public class ListMessagesService {
     @Autowired
     private PersonRepository personRepository;
 
-    @Autowired
-    private HttpServletRequest context;
-
     public List<ListMessagesDTO> findAllMessagesInChat(GroupChatDTO groupChatDTO) throws NoSuchGroupChatException {
         if(groupChatRepository.findById(groupChatDTO.getId()) == null) throw new NoSuchGroupChatException("Групповой чат не найден");
         List<ListMessage> listMessageList = listMessagesRepository.getListMessageByChatId(groupChatDTO.getId());
@@ -46,7 +44,7 @@ public class ListMessagesService {
     }
 
     public Long createListMessages(ListMessagesDTO listMessagesDTO) throws WrongPersonException{
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if(person.getId() != listMessagesDTO.getPersonDTO().getId()) throw new WrongPersonException("Нет прав для этого действия!");
         ListMessage listMessage = new ListMessage(groupChatRepository.findGroupChatById(listMessagesDTO.getGroupChatDTO().getId()), personRepository.getById(person.getId()),
                 listMessagesDTO.getContent(), listMessagesDTO.getDateCreate());

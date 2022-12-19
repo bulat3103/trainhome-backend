@@ -11,6 +11,7 @@ import com.example.trainhome.entities.Person;
 import com.example.trainhome.entities.Session;
 import com.example.trainhome.repositories.CoachRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,9 +32,6 @@ public class EatCalendarService {
     @Autowired
     private CoachRepository coachRepository;
 
-    @Autowired
-    private HttpServletRequest context;
-
     public void validateRecommendation(EatCalendarDTO eatCalendarDTO) throws InvalidDataException {
         StringBuilder message = new StringBuilder();
         boolean valid = true;
@@ -49,7 +47,7 @@ public class EatCalendarService {
     }
 
     public EatCalendarDTO getCoachRecommendation(Long personId, Date date) throws RecommendationNotFoundException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         EatCalendar recommendation = eatCalendarRepository.getByPersonIdAndCoachIdAndDate(person.getId(), personId, date);
         if (recommendation == null) {
             throw new RecommendationNotFoundException("Не было найдено записей!");
@@ -59,12 +57,12 @@ public class EatCalendarService {
     }
 
     public List<Date> getPersonDates() {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return eatCalendarRepository.getAllDate(person.getId());
     }
 
     public List<EatCalendarDTO> getPersonRecommendationByDate(Date date) throws RecommendationNotFoundException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<EatCalendar> list = eatCalendarRepository.getAllByPersonIdAndDate(person.getId(), date);
         if (list.isEmpty()) {
             throw new RecommendationNotFoundException("Не было найдено записей!");
@@ -78,7 +76,7 @@ public class EatCalendarService {
     }
 
     public Long createRecommendation(EatCalendarDTO eatCalendarDTO) {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         EatCalendar eatCalendar = new EatCalendar(
                 eatCalendarDTO.getInfo(),
                 eatCalendarDTO.getDate(),
@@ -90,7 +88,7 @@ public class EatCalendarService {
     }
 
     public void deleteRecommendation(Long id) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         EatCalendar eatCalendar = eatCalendarRepository.getById(id);
         long personId = eatCalendar.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {
@@ -103,7 +101,7 @@ public class EatCalendarService {
         if (eatCalendarDTO.getInfo() == null || eatCalendarDTO.getInfo().equals("")) {
             throw new InvalidDataException("Рекомендация не может быть пустой!");
         }
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         EatCalendar eatCalendar = eatCalendarRepository.getById(eatCalendarDTO.getId());
         long personId = eatCalendar.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {

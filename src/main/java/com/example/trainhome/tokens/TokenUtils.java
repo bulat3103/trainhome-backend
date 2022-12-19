@@ -1,29 +1,52 @@
 package com.example.trainhome.tokens;
 
-import com.example.trainhome.entities.Person;
+import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
-import org.postgresql.util.Base64;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
 @Component
 public class TokenUtils {
+    @Value("${jwt.token.secret}")
+    private String secretKey;
 
-    public static String generate(Person person) {
-        String in = String.valueOf(Date.from(Instant.now())) +
-                Math.random() + person.getEmail() + person.getId() + person;
+    public String generateToken(String username) {
+        Date date = Date.from(LocalDate.now().plusDays(15).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return Jwts.builder()
+                .setSubject(username)
+                .setExpiration(date)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
+                .compact();
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public boolean validateToken(String authToken) {
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            byte[] bytes = md.digest(in.getBytes(StandardCharsets.UTF_8));
-            return Base64.encodeBytes(bytes, Base64.DONT_BREAK_LINES);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(authToken);
+            return true;
+        } catch (SignatureException e) {
+            log.error("Invalid JWT signature: " + e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Invalid JWT token: " + e.getMessage());
+        } catch (ExpiredJwtException e) {
+            log.error("JWT token is expired: " + e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("JWT token is unsupported: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("JWT claims string is empty: " + e.getMessage());
         }
+        return false;
     }
 }

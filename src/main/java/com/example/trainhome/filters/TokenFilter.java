@@ -1,54 +1,37 @@
 package com.example.trainhome.filters;
 
-import com.example.trainhome.configuration.PermissionConfig;
-import com.example.trainhome.configuration.RoleConfig;
-import com.example.trainhome.entities.Session;
-import com.example.trainhome.repositories.SessionRepository;
+import com.example.trainhome.configuration.CustomUserDetails;
+import com.example.trainhome.configuration.CustomUserDetailsService;
+import com.example.trainhome.tokens.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@Component
-@Order(10)
-public class TokenFilter implements Filter {
+@Slf4j
+public class TokenFilter extends GenericFilterBean {
+    @Autowired
+    private TokenUtils tokenUtils;
 
     @Autowired
-    private SessionRepository sessionRepository;
-    @Autowired
-    private PermissionConfig permissionConfig;
+    private CustomUserDetailsService customUserDetailsService;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest request = (HttpServletRequest) servletRequest;
-        String requestUrl = request.getRequestURL().toString();
-        if (permissionConfig.containsUrl(RoleConfig.UNAUTHORIZED.toString(), requestUrl)) {
-            filterChain.doFilter(servletRequest, servletResponse);
-        } else {
-            String token = parseToken(request);
-            if (token == null) {
-                ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_BAD_REQUEST, "Bad request");
-            } else {
-                Session session = sessionRepository.getByToken(token);
-                if (session == null || session.isExpired()) {
-                    ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_UNAUTHORIZED, "The token is not valid.");
-                } else {
-                    if ((permissionConfig.containsUrl(RoleConfig.ROLE_COACH.toString(), requestUrl)
-                            && !session.getPerson().getRoleId().getName().equals(RoleConfig.ROLE_COACH.toString()))
-                            || (permissionConfig.containsUrl(RoleConfig.ROLE_CLIENT.toString(), requestUrl)
-                            && !session.getPerson().getRoleId().getName().equals(RoleConfig.ROLE_CLIENT.toString()))) {
-                        ((HttpServletResponse) servletResponse).sendError(HttpServletResponse.SC_FORBIDDEN, "You have no rights for this action.");
-                    }
-                    servletRequest.setAttribute("session", session);
-                    filterChain.doFilter(servletRequest, servletResponse);
-                }
-            }
+        String token = parseToken((HttpServletRequest) servletRequest);
+        if (token != null && tokenUtils.validateToken(token)) {
+            String email = tokenUtils.getUsernameFromToken(token);
+            CustomUserDetails customUserDetails = customUserDetailsService.loadUserByUsername(email);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         }
+        filterChain.doFilter(servletRequest, servletResponse);
     }
 
     private String parseToken(HttpServletRequest request) {

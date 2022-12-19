@@ -13,6 +13,7 @@ import com.example.trainhome.repositories.*;
 import com.example.trainhome.dto.GroupsDTO;
 import com.example.trainhome.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -37,9 +38,6 @@ public class GroupsService {
     @Autowired
     private GroupsRepository groupsRepository;
 
-    @Autowired
-    private HttpServletRequest context;
-
     public void validateGroup(GroupsDTO groupsDTO) throws InvalidDataException {
         StringBuilder message = new StringBuilder();
         boolean valid = true;
@@ -63,7 +61,7 @@ public class GroupsService {
     }
 
     public List<GroupsDTO> getAllGroups() {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<GroupsDTO> toReturn = new ArrayList<>();
         List<Groups> list;
         if (person.getRoleId().getName().equals("COACH")) {
@@ -98,7 +96,7 @@ public class GroupsService {
     }
 
     public void addPersonToGroup(Long groupId, Long personId) throws WrongPersonException, NoSuchPersonException, InvalidDataException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Groups group = groupsRepository.getById(groupId);
         long coachId = group.getCoachId().getPersonId().getId();
         if (person.getId() != coachId) {
@@ -113,7 +111,7 @@ public class GroupsService {
     }
 
     public Long addNewGroup(GroupsDTO groupsDTO) {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return groupsRepository.save(new Groups(
                 groupsDTO.getName(),
                 coachRepository.getById(person.getId()),
@@ -125,7 +123,7 @@ public class GroupsService {
     }
 
     public void deleteGroup(Long id) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Groups group = groupsRepository.getById(id);
         long personId = group.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {
@@ -135,7 +133,7 @@ public class GroupsService {
     }
 
     public void updateGroup(GroupsDTO groupsDTO) throws WrongPersonException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Groups group = groupsRepository.getById(groupsDTO.getId());
         long personId = group.getCoachId().getPersonId().getId();
         if (personId != person.getId()) {

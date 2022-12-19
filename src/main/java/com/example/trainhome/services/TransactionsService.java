@@ -12,6 +12,7 @@ import com.example.trainhome.repositories.PersonRepository;
 import com.example.trainhome.repositories.TransactionsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,11 +31,8 @@ public class TransactionsService {
     @Autowired
     private PersonRepository personRepository;
 
-    @Autowired
-    private HttpServletRequest context;
-
     public void createTransaction(TransactionsDTO transactionsDTO) throws InvalidDataException {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if ((long) person.getId() == transactionsDTO.getCoachId()) {
             if (Math.abs(transactionsDTO.getMoney()) > getCoachMoney()) throw new InvalidDataException("Недостаточно средств на счете!");
         }
@@ -47,7 +45,7 @@ public class TransactionsService {
     }
 
     public List<TransactionsResponseDTO> getCoachListTransaction() {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<Transactions> list = transactionsRepository.getAllByCoachId(person.getId());
         List<TransactionsResponseDTO> toReturn = new ArrayList<>();
         for (Transactions transaction : list) {
@@ -61,11 +59,7 @@ public class TransactionsService {
     }
 
     public Integer getCoachMoney() {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
+        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         return transactionsRepository.getCoachMoney(person.getId());
-    }
-
-    public void withdrawMoney(Integer count) {
-        Person person = ((Session) context.getAttribute("session")).getPerson();
     }
 }

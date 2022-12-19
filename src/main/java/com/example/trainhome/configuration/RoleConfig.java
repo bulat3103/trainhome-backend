@@ -1,9 +1,8 @@
 package com.example.trainhome.configuration;
 
 public enum RoleConfig {
-    ROLE_CLIENT("CLIENT"),
-    ROLE_COACH("COACH"),
-    UNAUTHORIZED("UNAUTHORIZED");
+    ROLE_CLIENT("ROLE_CLIENT"),
+    ROLE_COACH("ROLE_COACH");
 
     private final String name;
 
