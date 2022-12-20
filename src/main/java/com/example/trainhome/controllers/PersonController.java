@@ -26,9 +26,20 @@ public class PersonController {
 
     @CrossOrigin
     @GetMapping
-    ResponseEntity<?> getPersonByEmail(@RequestBody String email) {
+    ResponseEntity<?> getPersonByEmail(@RequestParam String email) {
+        Map<Object, Object> model = new HashMap<>();
         Person person = personService.findByEmail(email);
-        return ResponseEntity.ok(PersonDTO.PersonToPersonDTO(person));
+        model.put("person", PersonDTO.PersonToPersonDTO(person));
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/id")
+    ResponseEntity<?> getPersonById(@RequestParam Long id) {
+        Map<Object, Object> model = new HashMap<>();
+        Person person = personService.findPersonById(id);
+        model.put("person", PersonDTO.PersonToPersonDTO(person));
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
