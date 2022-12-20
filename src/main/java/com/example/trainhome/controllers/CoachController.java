@@ -18,7 +18,7 @@ public class CoachController {
     private CoachService coachService;
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json")
+    @PostMapping(value = "list", produces = "application/json")
     public ResponseEntity<?> getFilteredCoaches (@RequestBody CoachSearchDTO coachSearchDTO) {
         Map<Object, Object> model = new HashMap<>();
         model.put("coaches", coachService.getFilteredCoaches(coachSearchDTO));
