@@ -38,6 +38,7 @@ public class AuthController {
                 authService.fillCoach(requestDTO, newPerson.getId());
             }
             model.put("token", token);
+            model.put("role", newPerson.getRoleId().getName());
             return new ResponseEntity<>(model, HttpStatus.OK);
         } catch (InvalidDataException e) {
             model.put("message", e.getMessage());
@@ -50,8 +51,8 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
         Map<Object, Object> model = new HashMap<>();
         try {
-            String token = authService.authorizePerson(authRequestDTO);
-            model.put("token", token);
+            Map<Object, Object> map = authService.authorizePerson(authRequestDTO);
+            model.putAll(map);
             return new ResponseEntity<>(model, HttpStatus.OK);
         } catch (NoSuchPersonException | InvalidDataException e) {
             model.put("message", e.getMessage());

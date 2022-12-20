@@ -24,8 +24,8 @@ public class ListMessagesController {
     private ListMessagesService listMessagesService;
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAllMessagesInChat(@RequestBody GroupChatDTO groupChatDTO){
+    @PostMapping(value = "list", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getAllMessagesInChat(@RequestBody GroupChatDTO groupChatDTO) {
         Map<Object, Object> model = new HashMap<>();
         try {
             List<ListMessagesDTO> list = listMessagesService.findAllMessagesInChat(groupChatDTO);
@@ -39,15 +39,10 @@ public class ListMessagesController {
 
     @CrossOrigin
     @PostMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAllMessagesInChat(@RequestBody ListMessagesDTO listMessagesDTO){
+    public ResponseEntity<?> createMessage(@RequestBody ListMessagesDTO listMessagesDTO) {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            Long id = listMessagesService.createListMessages(listMessagesDTO);
-            model.put("id", id);
-        } catch (WrongPersonException e) {
-            model.put("messages", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        Long id = listMessagesService.createListMessages(listMessagesDTO);
+        model.put("id", id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }

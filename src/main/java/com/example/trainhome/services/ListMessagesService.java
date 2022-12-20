@@ -43,10 +43,9 @@ public class ListMessagesService {
         return listToReturn;
     }
 
-    public Long createListMessages(ListMessagesDTO listMessagesDTO) throws WrongPersonException{
+    public Long createListMessages(ListMessagesDTO listMessagesDTO) {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(person.getId() != listMessagesDTO.getPersonDTO().getId()) throw new WrongPersonException("Нет прав для этого действия!");
-        ListMessage listMessage = new ListMessage(groupChatRepository.findGroupChatById(listMessagesDTO.getGroupChatId()), personRepository.getById(person.getId()),
+        ListMessage listMessage = new ListMessage(groupChatRepository.findGroupChatById(listMessagesDTO.getGroupChatId()), person,
                 listMessagesDTO.getContent(), listMessagesDTO.getDateCreate());
         listMessagesRepository.save(listMessage);
         return listMessage.getId();

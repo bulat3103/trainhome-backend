@@ -9,6 +9,7 @@ import com.example.trainhome.entities.Session;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.repositories.GroupChatRepository;
+import com.example.trainhome.repositories.ListPersonRepository;
 import com.example.trainhome.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,6 +25,9 @@ public class GroupChatService {
 
     @Autowired
     private GroupChatRepository groupChatRepository;
+
+    @Autowired
+    private ListPersonRepository listPersonRepository;
 
     @Autowired
     private PersonService personService;
@@ -55,12 +59,13 @@ public class GroupChatService {
 
     public List<GroupChatDTO> getAllGroupChatByPersonId(){
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<GroupChat> GroupChat = groupChatRepository.getAllGroupChatByPersonId(person.getId());
+        List<Long> listPerson = listPersonRepository.getAllGroupChatByPersonId(person.getId());
         List<GroupChatDTO> list = new ArrayList<>();
-        for(GroupChat groupChat : GroupChat){
-            list.add(new GroupChatDTO(groupChat.getId(),
-                    PersonDTO.PersonToPersonDTO(groupChat.getPersonId()),
-                    groupChat.getName()));
+        for(Long id : listPerson){
+            GroupChat chat = groupChatRepository.findGroupChatById(id);
+            list.add(new GroupChatDTO(chat.getId(),
+                    PersonDTO.PersonToPersonDTO(chat.getPersonId()),
+                    chat.getName()));
         }
         return list;
     }

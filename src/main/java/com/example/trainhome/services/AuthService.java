@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class AuthService {
@@ -60,12 +62,15 @@ public class AuthService {
         return personRepository.save(newPerson);
     }
 
-    public String authorizePerson(AuthRequestDTO authRequestDTO) throws NoSuchPersonException, InvalidDataException {
+    public Map<Object, Object> authorizePerson(AuthRequestDTO authRequestDTO) throws NoSuchPersonException, InvalidDataException {
         Person personFromDB = findByEmail(authRequestDTO.getEmail());
         if (personFromDB == null) throw new NoSuchPersonException("Такого пользователя не существует!");
         else if (!authRequestDTO.getPassword().equals(personFromDB.getPassword())) throw new InvalidDataException("Неправильный пароль!");
         else {
-            return tokenUtils.generateToken(personFromDB.getEmail());
+            Map<Object, Object> map = new HashMap<>();
+            map.put("token", tokenUtils.generateToken(personFromDB.getEmail()));
+            map.put("role", personFromDB.getRoleId().getName());
+            return map;
         }
     }
 

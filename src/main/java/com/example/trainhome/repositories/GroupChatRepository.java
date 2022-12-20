@@ -28,9 +28,6 @@ public interface GroupChatRepository extends JpaRepository<GroupChat, Long> {
     @Query(value = "delete from list_person where person_id = :person_id and chat_id = :chat_id", nativeQuery = true)
     void deletePersonInGroupChat(@Param("chat_id") Long ChatId, @Param("person_id") Long personId);
 
-    @Query(value = "select chat_id from list_person where person_id = :person_id", nativeQuery = true)
-    List<GroupChat> getAllGroupChatByPersonId(@Param("person_id") Long personId);
-
     @Query(value = "select * from get_all_person_in_group_chat(:id)", nativeQuery = true)
     List<Person> getAllPersonIdGroupChat(@Param("id") Long id);
 }
