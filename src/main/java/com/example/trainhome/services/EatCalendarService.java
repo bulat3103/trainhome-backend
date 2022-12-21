@@ -1,6 +1,7 @@
 package com.example.trainhome.services;
 
 import com.example.trainhome.dto.EatCalendarDTO;
+import com.example.trainhome.dto.PersonDTO;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.RecommendationNotFoundException;
 import com.example.trainhome.exceptions.WrongPersonException;
@@ -8,13 +9,11 @@ import com.example.trainhome.repositories.EatCalendarRepository;
 import com.example.trainhome.repositories.PersonRepository;
 import com.example.trainhome.entities.EatCalendar;
 import com.example.trainhome.entities.Person;
-import com.example.trainhome.entities.Session;
 import com.example.trainhome.repositories.CoachRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -61,16 +60,13 @@ public class EatCalendarService {
         return eatCalendarRepository.getAllDate(person.getId());
     }
 
-    public List<EatCalendarDTO> getPersonRecommendationByDate(Date date) throws RecommendationNotFoundException {
+    public List<EatCalendarDTO> getPersonRecommendationByDate(Date date) {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<EatCalendar> list = eatCalendarRepository.getAllByPersonIdAndDate(person.getId(), date);
-        if (list.isEmpty()) {
-            throw new RecommendationNotFoundException("Не было найдено записей!");
-        }
         List<EatCalendarDTO> listToReturn = new ArrayList<>();
         for (EatCalendar recommendation : list) {
             listToReturn.add(new EatCalendarDTO(recommendation.getId(), recommendation.getInfo(), recommendation.getDate(),
-                    person.getId(), null));
+                    person.getId(), PersonDTO.PersonToPersonDTO(recommendation.getCoachId().getPersonId())));
         }
         return listToReturn;
     }

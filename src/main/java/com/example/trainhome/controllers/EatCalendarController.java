@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +34,14 @@ public class EatCalendarController {
 
     @CrossOrigin
     @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getPersonsRecommendationByDate(@RequestParam("date") Date date) {
+    public ResponseEntity<?> getPersonsRecommendationByDate(@RequestParam("date") String dateS) {
         Map<Object, Object> model = new HashMap<>();
         try {
-            List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendationByDate(date);
+            SimpleDateFormat format = new SimpleDateFormat();
+            format.applyPattern("dd.MM.yyyy");
+            List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendationByDate(new Date(format.parse(dateS).getTime()));
             model.put("recommendations", list);
-        } catch (RecommendationNotFoundException e) {
+        } catch (ParseException e) {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
         }

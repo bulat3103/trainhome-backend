@@ -12,4 +12,7 @@ public interface ListPersonRepository extends JpaRepository<ListPerson, ListPers
 
     @Query(value = "select chat_id from list_person where person_id = :person_id", nativeQuery = true)
     List<Long> getAllGroupChatByPersonId(@Param("person_id") Long personId);
+
+    @Query(value = "select person_id from list_person where chat_id = :chat_id", nativeQuery = true)
+    List<Long> getAllPersonIdInChat(@Param("chat_id") Long chatId);
 }

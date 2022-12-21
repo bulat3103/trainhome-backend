@@ -57,7 +57,7 @@ public class TrainingService {
                 trainingDTO.getTrainingDate(),
                 coachRepository.getById(person.getId()),
                 trainingDTO.getLink(),
-                groupsRepository.getById(trainingDTO.getGroupsDTO().getId())
+                groupsRepository.getById(trainingDTO.getCreateGroupId())
         );
         trainingRepository.save(training);
         return training.getId();
@@ -94,7 +94,7 @@ public class TrainingService {
         List<TrainingDTO> trainingDTOList = new ArrayList<>();
         for (Training training : trainingList){
             trainingDTOList.add(new TrainingDTO(training.getId(), training.getTrainingDate(), PersonDTO.PersonToPersonDTO(training.getCoachId().getPersonId()),
-                    training.getLink(), GroupsDTO.GroupsToGroupsDTO(training.getGroupId())));
+                    training.getLink(), training.getGroupId().getId(), GroupsDTO.GroupsToGroupsDTO(training.getGroupId())));
         }
         return trainingDTOList;
     }

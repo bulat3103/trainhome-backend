@@ -33,12 +33,12 @@ public class TransactionsService {
 
     public void createTransaction(TransactionsDTO transactionsDTO) throws InvalidDataException {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if ((long) person.getId() == transactionsDTO.getCoachId()) {
+        if (transactionsDTO.getCoachId() != null && (long) person.getId() == transactionsDTO.getCoachId()) {
             if (Math.abs(transactionsDTO.getMoney()) > getCoachMoney()) throw new InvalidDataException("Недостаточно средств на счете!");
         }
         transactionsRepository.save(new Transactions(
                 transactionsDTO.getDate(),
-                coachRepository.getById(transactionsDTO.getCoachId()),
+                coachRepository.getById(transactionsDTO.getCoachId() != null ? transactionsDTO.getCoachId() : person.getId()),
                 transactionsDTO.getMoney(),
                 personRepository.getById(person.getId())
         ));

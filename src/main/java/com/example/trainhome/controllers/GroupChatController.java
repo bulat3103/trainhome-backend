@@ -24,15 +24,26 @@ public class GroupChatController {
 
     @CrossOrigin
     @PostMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> createGroupChat(GroupChatDTO groupChatDTO){
+    public ResponseEntity<?> createGroupChat(){
         Map<Object, Object> model = new HashMap<>();
-        try{
-            Long id = groupChatService.createGroupChat(groupChatDTO);
-            model.put("chat", id);
-        } catch (WrongPersonException e) {
-            model.put("chat", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        Long id = groupChatService.createGroupChat();
+        model.put("chat", id);
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @GetMapping(value = "/check", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> check(@RequestParam Long personId) {
+        Map<Object, Object> model = new HashMap<>();
+        model.put("check", groupChatService.check(personId));
+        return new ResponseEntity<>(model, HttpStatus.OK);
+    }
+
+    @CrossOrigin
+    @PostMapping(value = "/add/{id}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> addPeopleToGroupChat(@PathVariable Long id, @RequestParam Long peopleToAdd) {
+        Map<Object, Object> model = new HashMap<>();
+        groupChatService.addPeopleToGroupChat(id, peopleToAdd);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 

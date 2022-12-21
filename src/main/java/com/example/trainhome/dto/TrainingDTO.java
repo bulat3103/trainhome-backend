@@ -2,7 +2,6 @@ package com.example.trainhome.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.util.Date;
 
@@ -13,6 +12,6 @@ public class TrainingDTO {
     private Date trainingDate;
     private PersonDTO personDTO;
     private String link;
-    @NonNull
+    private Long createGroupId;
     private GroupsDTO groupsDTO;
 }
