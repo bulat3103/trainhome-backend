@@ -32,7 +32,7 @@ public class AuthController {
         Map<Object, Object> model = new HashMap<>();
         try {
             authService.validateRegisterRequestDTO(requestDTO);
-            Person newPerson = authService.addNewPerson(requestDTO, RoleConfig.valueOf(role.toUpperCase()).toString());
+            Person newPerson = authService.addNewPerson(requestDTO, role.equals("ROLE_CLIENT") ? "CLIENT" : "COACH");
             String token = tokenUtils.generateToken(newPerson.getEmail());
             if (RoleConfig.valueOf(role.toUpperCase()).toString().equals(RoleConfig.ROLE_COACH.toString())) {
                 authService.fillCoach(requestDTO, newPerson.getId());
