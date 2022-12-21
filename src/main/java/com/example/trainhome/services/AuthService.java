@@ -99,16 +99,6 @@ public class AuthService {
             message.append("ФИО не может быть пустым!");
             valid = false;
         }
-        if (requestDTO.getPhoneNumber() == null || requestDTO.getPhoneNumber().equals("")
-                || !requestDTO.getPhoneNumber().matches("^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$")) {
-            message.append("Некорректный формат телефона!");
-            valid = false;
-        }
-        if (requestDTO.getEmail() == null || requestDTO.getEmail().equals("")
-                || !requestDTO.getEmail().matches(emailCheck)) {
-            message.append("Некорректный формат email!");
-            valid = false;
-        }
         if (requestDTO.getBirthday() == null || requestDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) {
             message.append("Некорректная дата рождения!");
             valid = false;
