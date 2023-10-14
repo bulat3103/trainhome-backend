@@ -12,15 +12,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/transaction")
+@RequestMapping("/api/v1/transaction")
 public class TransactionsController {
 
     @Autowired
     private TransactionsService transactionsService;
 
     @CrossOrigin
-    @PostMapping(value = "pay", produces = "application/json")
-    public ResponseEntity<?> pay(@RequestBody TransactionsDTO transactionsDTO) {
+    @PostMapping(produces = "application/json")
+    public ResponseEntity<?> createTransaction(@RequestBody TransactionsDTO transactionsDTO) {
         Map<Object, Object> model = new HashMap<>();
         try {
             transactionsService.createTransaction(transactionsDTO);
@@ -32,18 +32,18 @@ public class TransactionsController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json")
-    public ResponseEntity<?> getTransactions() {
+    @GetMapping(produces = "application/json")
+    public ResponseEntity<?> getAllTransactions() {
         Map<Object, Object> model = new HashMap<>();
         model.put("transactions", transactionsService.getCoachListTransaction());
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<?> getCoachMoney() {
+    @GetMapping(value = "/sum/{coachId}", produces = "application/json")
+    public ResponseEntity<?> getCoachMoney(@PathVariable("coachId") Long coachId) {
         Map<Object, Object> model = new HashMap<>();
-        model.put("total", transactionsService.getCoachMoney());
+        model.put("total", transactionsService.getCoachMoney(coachId));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }

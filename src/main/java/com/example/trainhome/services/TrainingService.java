@@ -83,8 +83,8 @@ public class TrainingService {
         trainingRepository.updateTraining(trainingDTO.getId(), trainingDTO.getTrainingDate(), trainingDTO.getLink());
     }
 
-    public List<TrainingDTO> getAllTrainingByPerson(){
-        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
+    public List<TrainingDTO> getAllTrainings(Long personId){
+        Person person = personRepository.getById(personId);
         List<Training> trainingList;
         if (person.getRoleId().getName().equals("COACH")) {
             trainingList = trainingRepository.getAllByCoachId(person.getId());

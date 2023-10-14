@@ -11,14 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/coach")
+@RequestMapping("/api/v1/coaches")
 public class CoachController {
 
     @Autowired
     private CoachService coachService;
 
     @CrossOrigin
-    @PostMapping(value = "list", produces = "application/json")
+    @GetMapping(produces = "application/json")
     public ResponseEntity<?> getFilteredCoaches (@RequestBody CoachSearchDTO coachSearchDTO) {
         Map<Object, Object> model = new HashMap<>();
         model.put("coaches", coachService.getFilteredCoaches(coachSearchDTO));

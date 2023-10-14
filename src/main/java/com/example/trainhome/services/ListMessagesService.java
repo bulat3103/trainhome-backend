@@ -32,12 +32,12 @@ public class ListMessagesService {
     @Autowired
     private PersonRepository personRepository;
 
-    public List<ListMessagesDTO> findAllMessagesInChat(GroupChatDTO groupChatDTO) throws NoSuchGroupChatException {
-        if(groupChatRepository.findById(groupChatDTO.getId()) == null) throw new NoSuchGroupChatException("Групповой чат не найден");
-        List<ListMessage> listMessageList = listMessagesRepository.getListMessageByChatId(groupChatDTO.getId());
+    public List<ListMessagesDTO> findAllMessagesInChat(Long groupId) throws NoSuchGroupChatException {
+        if(groupChatRepository.findById(groupId).isEmpty()) throw new NoSuchGroupChatException("Групповой чат не найден");
+        List<ListMessage> listMessageList = listMessagesRepository.getListMessageByChatId(groupId);
         List<ListMessagesDTO> listToReturn = new ArrayList<>();
         for(ListMessage listMessage : listMessageList){
-            listToReturn.add(new ListMessagesDTO(listMessage.getId(), groupChatDTO.getId(), PersonDTO.PersonToPersonDTO(listMessage.getPersonId()),
+            listToReturn.add(new ListMessagesDTO(listMessage.getId(), groupId, PersonDTO.PersonToPersonDTO(listMessage.getPersonId()),
                     listMessage.getContent(), listMessage.getDateCreate()));
         }
         return listToReturn;

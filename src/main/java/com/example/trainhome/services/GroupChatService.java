@@ -63,15 +63,13 @@ public class GroupChatService {
         groupChatRepository.updateGroupChatName(groupChatDTO.getId(), groupChatDTO.getName());
     }
 
-    public void deletePersonInGroupChat(GroupChatDTO groupChatDTO) throws InvalidDataException {
-        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        if(groupChatRepository.findById(groupChatDTO.getId()) == null) throw new InvalidDataException("Группа не найдена");
-        groupChatRepository.deletePersonInGroupChat(groupChatDTO.getId(), person.getId());
+    public void deletePersonInGroupChat(Long id, Long personId) throws InvalidDataException {
+        if(groupChatRepository.findById(id).isEmpty()) throw new InvalidDataException("Группа не найдена");
+        groupChatRepository.deletePersonInGroupChat(id, personId);
     }
 
-    public List<GroupChatDTO> getAllGroupChatByPersonId(){
-        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<Long> listPerson = listPersonRepository.getAllGroupChatByPersonId(person.getId());
+    public List<GroupChatDTO> getAllGroupChatByPersonId(Long personId){
+        List<Long> listPerson = listPersonRepository.getAllGroupChatByPersonId(personId);
         List<GroupChatDTO> list = new ArrayList<>();
         for(Long id : listPerson){
             GroupChat chat = groupChatRepository.findGroupChatById(id);
@@ -84,10 +82,10 @@ public class GroupChatService {
         return list;
     }
 
-    public List<PersonDTO> getAllPersonInGroupChat(GroupChatDTO groupChatDTO) throws WrongPersonException {
+    public List<PersonDTO> getAllPersonInGroupChat(Long groupId) throws WrongPersonException {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<Person> personList = groupChatRepository.getAllPersonIdGroupChat(groupChatDTO.getId());
-        Boolean flag = false;
+        List<Person> personList = groupChatRepository.getAllPersonIdGroupChat(groupId);
+        boolean flag = false;
         for(Person per : personList){
             if(person.equals(per)){
                 flag = true;

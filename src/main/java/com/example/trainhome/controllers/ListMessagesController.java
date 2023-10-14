@@ -17,18 +17,18 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping(value = "/messages")
+@RequestMapping(value = "/api/v1/messages")
 public class ListMessagesController {
 
     @Autowired
     private ListMessagesService listMessagesService;
 
     @CrossOrigin
-    @PostMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAllMessagesInChat(@RequestBody GroupChatDTO groupChatDTO) {
+    @GetMapping(value = "/{groupId}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getAllMessagesInChat(@PathVariable("groupId") Long groupId) {
         Map<Object, Object> model = new HashMap<>();
         try {
-            List<ListMessagesDTO> list = listMessagesService.findAllMessagesInChat(groupChatDTO);
+            List<ListMessagesDTO> list = listMessagesService.findAllMessagesInChat(groupId);
             model.put("messages", list);
         } catch (NoSuchGroupChatException e) {
             model.put("messages", e.getMessage());

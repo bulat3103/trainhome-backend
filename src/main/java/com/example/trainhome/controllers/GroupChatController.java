@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/groupchat")
+@RequestMapping("/api/v1/groupchat")
 public class GroupChatController {
 
     @Autowired
@@ -40,15 +40,15 @@ public class GroupChatController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "/add/{id}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> addPeopleToGroupChat(@PathVariable Long id, @RequestParam Long peopleToAdd) {
+    @PostMapping(value = "/add/{id}/{personId}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> addPeopleToGroupChat(@PathVariable("id") Long id, @PathVariable("personId") Long peopleToAdd) {
         Map<Object, Object> model = new HashMap<>();
         groupChatService.addPeopleToGroupChat(id, peopleToAdd);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @PostMapping(value = "update", produces = "application/json;charset=UTF-8")
+    @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> updateGroupChat(GroupChatDTO groupChatDTO){
         Map<Object, Object> model = new HashMap<>();
         try{
@@ -64,11 +64,11 @@ public class GroupChatController {
     }
 
     @CrossOrigin
-    @DeleteMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> deletePersonInGroupChat(GroupChatDTO groupChatDTO){
+    @DeleteMapping(value = "/delete/{id}/{personId}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> deletePersonInGroupChat(@PathVariable("id") Long id, @PathVariable("personId") Long personId, GroupChatDTO groupChatDTO){
         Map<Object, Object> model = new HashMap<>();
         try{
-            groupChatService.deletePersonInGroupChat(groupChatDTO);
+            groupChatService.deletePersonInGroupChat(id, personId);
         } catch (InvalidDataException e) {
             model.put("chat", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
@@ -77,20 +77,20 @@ public class GroupChatController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAllGroupChatByPersonId(){
+    @GetMapping(value = "/person/{personId}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getAllGroupChatByPersonId(@PathVariable("personId") Long personId){
         Map<Object, Object> model = new HashMap<>();
-            List<GroupChatDTO> toReturn = groupChatService.getAllGroupChatByPersonId();
+            List<GroupChatDTO> toReturn = groupChatService.getAllGroupChatByPersonId(personId);
             model.put("chat", toReturn);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @GetMapping(value = "allchat", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getAllPersonInGroupChat(GroupChatDTO groupChatDTO){
+    @GetMapping(value = "/{groupId}/participants", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getAllPersonInGroupChat(@PathVariable("groupId") Long groupId){
         Map<Object, Object> model = new HashMap<>();
         try{
-            List<PersonDTO> toReturn = groupChatService.getAllPersonInGroupChat(groupChatDTO);
+            List<PersonDTO> toReturn = groupChatService.getAllPersonInGroupChat(groupId);
             model.put("chat", toReturn);
         } catch (WrongPersonException e) {
             model.put("chat", e.getMessage());

@@ -14,14 +14,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/groups")
+@RequestMapping("/api/v1/groups")
 public class GroupsController {
 
     @Autowired
     private GroupsService groupsService;
 
     @CrossOrigin
-    @GetMapping(value = "/list", produces = "application/json")
+    @GetMapping(produces = "application/json")
     public ResponseEntity<?> getAllGroups() {
         Map<Object, Object> model = new HashMap<>();
         model.put("groups", groupsService.getAllGroups());
@@ -29,19 +29,19 @@ public class GroupsController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> getPersonsInGroup(@PathVariable Long id) {
+    @GetMapping(value = "/{groupId}", produces = "application/json")
+    public ResponseEntity<?> getPersonsInGroup(@PathVariable("groupId") Long id) {
         Map<Object, Object> model = new HashMap<>();
         model.put("persons", groupsService.getPersonsInGroup(id));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @PostMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<?> addPersonToGroup(@PathVariable Long id, @RequestParam("personId") Long personId) {
+    @PostMapping(value = "/{groupId}/{personId}", produces = "application/json")
+    public ResponseEntity<?> addPersonToGroup(@PathVariable("groupId") Long groupId, @PathVariable("personId") Long personId) {
         Map<Object, Object> model = new HashMap<>();
         try {
-            groupsService.addPersonToGroup(id, personId);
+            groupsService.addPersonToGroup(groupId, personId);
         } catch (NoSuchPersonException | InvalidDataException  e) {
             model.put("message", e.getMessage());
             return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
@@ -67,8 +67,8 @@ public class GroupsController {
     }
 
     @CrossOrigin
-    @DeleteMapping
-    public ResponseEntity<?> deleteGroup(@RequestParam("groupId") Long groupId) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> deleteGroup(@PathVariable("id") Long groupId) {
         Map<Object, Object> model = new HashMap<>();
         try {
             groupsService.deleteGroup(groupId);
@@ -80,7 +80,7 @@ public class GroupsController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "update", produces = "application/json")
+    @PutMapping(produces = "application/json")
     public ResponseEntity<?> updateGroup(@RequestBody GroupsDTO groupsDTO) {
         Map<Object, Object> model = new HashMap<>();
         try {

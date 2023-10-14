@@ -18,15 +18,15 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping(value = "/person")
+@RequestMapping(value = "/api/v1/person")
 public class PersonController {
 
     @Autowired
     private PersonService personService;
 
     @CrossOrigin
-    @GetMapping
-    ResponseEntity<?> getPersonByEmail(@RequestParam String email) {
+    @GetMapping(value = "/email")
+    ResponseEntity<?> getPersonByEmail(@RequestParam("email") String email) {
         Map<Object, Object> model = new HashMap<>();
         Person person = personService.findByEmail(email);
         model.put("person", PersonDTO.PersonToPersonDTO(person));
@@ -34,8 +34,8 @@ public class PersonController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "/id")
-    ResponseEntity<?> getPersonById(@RequestParam Long id) {
+    @GetMapping(value = "/{id}")
+    ResponseEntity<?> getPersonById(@PathVariable("id") Long id) {
         Map<Object, Object> model = new HashMap<>();
         Person person = personService.findPersonById(id);
         model.put("person", PersonDTO.PersonToPersonDTO(person));
@@ -43,7 +43,7 @@ public class PersonController {
     }
 
     @CrossOrigin
-    @PostMapping("/update")
+    @PutMapping
     ResponseEntity<?> updatePerson(@RequestBody PersonDTO  personDTO) {
         Map<Object, Object> model = new HashMap<>();
         try{
@@ -60,7 +60,7 @@ public class PersonController {
     }
 
     @CrossOrigin
-    @PostMapping("/image")
+    @PutMapping("/image")
     ResponseEntity<?> updatePerson(@RequestBody ImageDTO imageDTO) {
         Map<Object, Object> model = new HashMap<>();
         try{
@@ -73,8 +73,8 @@ public class PersonController {
     }
 
     @CrossOrigin
-    @DeleteMapping
-    ResponseEntity<?> deletePerson(@RequestParam("id") Long id) {
+    @DeleteMapping(value = "/{id}")
+    ResponseEntity<?> deletePerson(@PathVariable("id") Long id) {
         Map<Object, Object> model = new HashMap<>();
         try{
             personService.delete(id);

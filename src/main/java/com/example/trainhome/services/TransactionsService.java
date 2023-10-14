@@ -34,7 +34,7 @@ public class TransactionsService {
     public void createTransaction(TransactionsDTO transactionsDTO) throws InvalidDataException {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         if (transactionsDTO.getCoachId() != null && (long) person.getId() == transactionsDTO.getCoachId()) {
-            if (Math.abs(transactionsDTO.getMoney()) > getCoachMoney()) throw new InvalidDataException("Недостаточно средств на счете!");
+            if (Math.abs(transactionsDTO.getMoney()) > getCoachMoney(person.getId())) throw new InvalidDataException("Недостаточно средств на счете!");
         }
         transactionsRepository.save(new Transactions(
                 transactionsDTO.getDate(),
@@ -58,8 +58,7 @@ public class TransactionsService {
         return toReturn;
     }
 
-    public Integer getCoachMoney() {
-        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        return transactionsRepository.getCoachMoney(person.getId());
+    public Integer getCoachMoney(Long coachId) {
+        return transactionsRepository.getCoachMoney(coachId);
     }
 }

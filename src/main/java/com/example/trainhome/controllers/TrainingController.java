@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/trains")
+@RequestMapping("/api/v1/trains")
 public class TrainingController {
 
     @Autowired
@@ -36,8 +36,8 @@ public class TrainingController {
     }
 
     @CrossOrigin
-    @DeleteMapping
-    public ResponseEntity<?> deleteTraining(@RequestParam("id") Long id) {
+    @DeleteMapping(value = "{id}")
+    public ResponseEntity<?> deleteTraining(@PathVariable("id") Long id) {
         Map<Object, Object> model = new HashMap<>();
         try {
             trainingService.deleteTraining(id);
@@ -49,7 +49,7 @@ public class TrainingController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "update", produces = "application/json;charset=UTF-8")
+    @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> updateTraining(@RequestBody TrainingDTO trainingDTO) {
         Map<Object, Object> model = new HashMap<>();
         try {
@@ -66,10 +66,10 @@ public class TrainingController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getPersonTraining(){
+    @GetMapping(value = "/{id}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getPersonTraining(@PathVariable("id") Long id){
         Map<Object, Object> model = new HashMap<>();
-        List<TrainingDTO> list =  trainingService.getAllTrainingByPerson();
+        List<TrainingDTO> list =  trainingService.getAllTrainings(id);
         model.put("trainings", list);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
