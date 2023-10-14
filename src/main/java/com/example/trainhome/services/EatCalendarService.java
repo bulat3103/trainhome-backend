@@ -60,13 +60,12 @@ public class EatCalendarService {
         return eatCalendarRepository.getAllDate(person.getId());
     }
 
-    public List<EatCalendarDTO> getPersonRecommendationByDate(Date date) {
-        Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
-        List<EatCalendar> list = eatCalendarRepository.getAllByPersonIdAndDate(person.getId(), date);
+    public List<EatCalendarDTO> getPersonRecommendationByDate(Long id, Date date) {
+        List<EatCalendar> list = eatCalendarRepository.getAllByPersonIdAndDate(id, date);
         List<EatCalendarDTO> listToReturn = new ArrayList<>();
         for (EatCalendar recommendation : list) {
             listToReturn.add(new EatCalendarDTO(recommendation.getId(), recommendation.getInfo(), recommendation.getDate(),
-                    person.getId(), PersonDTO.PersonToPersonDTO(recommendation.getCoachId().getPersonId())));
+                    id, PersonDTO.PersonToPersonDTO(recommendation.getCoachId().getPersonId())));
         }
         return listToReturn;
     }

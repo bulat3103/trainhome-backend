@@ -44,44 +44,26 @@ public class PersonController {
 
     @CrossOrigin
     @PutMapping
-    ResponseEntity<?> updatePerson(@RequestBody PersonDTO  personDTO) {
+    ResponseEntity<?> updatePerson(@RequestBody PersonDTO personDTO) throws NoSuchPersonException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try{
-            PersonDTO dto = personService.update(personDTO);
-            model.put("person", dto);
-            return new ResponseEntity<>(model, HttpStatus.OK);
-        } catch (NoSuchPersonException e) {
-            model.put("person", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        } catch (WrongPersonException e) {
-            model.put("person", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        PersonDTO dto = personService.update(personDTO);
+        model.put("person", dto);
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PutMapping("/image")
-    ResponseEntity<?> updatePerson(@RequestBody ImageDTO imageDTO) {
+    ResponseEntity<?> updatePerson(@RequestBody ImageDTO imageDTO) throws InvalidDataException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try{
-            personService.updateImage(imageDTO);
-            return new ResponseEntity<>(model, HttpStatus.OK);
-        } catch (WrongPersonException | InvalidDataException e) {
-            model.put("person", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        personService.updateImage(imageDTO);
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @DeleteMapping(value = "/{id}")
-    ResponseEntity<?> deletePerson(@PathVariable("id") Long id) {
+    ResponseEntity<?> deletePerson(@PathVariable("id") Long id) throws NoSuchPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try{
-            personService.delete(id);
-        } catch (NoSuchPersonException e) {
-            model.put("person", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        personService.delete(id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }
