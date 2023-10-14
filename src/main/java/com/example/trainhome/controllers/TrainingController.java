@@ -22,54 +22,36 @@ public class TrainingController {
 
     @CrossOrigin
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> createTraining(@RequestBody TrainingDTO trainingDTO) {
+    public ResponseEntity<?> createTraining(@RequestBody TrainingDTO trainingDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            trainingService.validateTraining(trainingDTO);
-            Long id = trainingService.addTraining(trainingDTO);
-            model.put("id", id);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        trainingService.validateTraining(trainingDTO);
+        Long id = trainingService.addTraining(trainingDTO);
+        model.put("id", id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @DeleteMapping(value = "{id}")
-    public ResponseEntity<?> deleteTraining(@PathVariable("id") Long id) {
+    public ResponseEntity<?> deleteTraining(@PathVariable("id") Long id) throws WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            trainingService.deleteTraining(id);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        trainingService.deleteTraining(id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PutMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> updateTraining(@RequestBody TrainingDTO trainingDTO) {
+    public ResponseEntity<?> updateTraining(@RequestBody TrainingDTO trainingDTO) throws WrongPersonException, InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            trainingService.validateTraining(trainingDTO);
-            trainingService.updateTraining(trainingDTO);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        trainingService.validateTraining(trainingDTO);
+        trainingService.updateTraining(trainingDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @GetMapping(value = "/{id}", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getPersonTraining(@PathVariable("id") Long id){
+    public ResponseEntity<?> getPersonTraining(@PathVariable("id") Long id) {
         Map<Object, Object> model = new HashMap<>();
-        List<TrainingDTO> list =  trainingService.getAllTrainings(id);
+        List<TrainingDTO> list = trainingService.getAllTrainings(id);
         model.put("trainings", list);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }

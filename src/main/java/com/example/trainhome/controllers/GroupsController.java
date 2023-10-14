@@ -38,61 +38,35 @@ public class GroupsController {
 
     @CrossOrigin
     @PostMapping(value = "/{groupId}/{personId}", produces = "application/json")
-    public ResponseEntity<?> addPersonToGroup(@PathVariable("groupId") Long groupId, @PathVariable("personId") Long personId) {
+    public ResponseEntity<?> addPersonToGroup(@PathVariable("groupId") Long groupId, @PathVariable("personId") Long personId) throws NoSuchPersonException, InvalidDataException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            groupsService.addPersonToGroup(groupId, personId);
-        } catch (NoSuchPersonException | InvalidDataException  e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        groupsService.addPersonToGroup(groupId, personId);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> createGroup(@RequestBody GroupsDTO groupsDTO) {
+    public ResponseEntity<?> createGroup(@RequestBody GroupsDTO groupsDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            groupsService.validateGroup(groupsDTO);
-            model.put("groupId", groupsService.addNewGroup(groupsDTO));
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        groupsService.validateGroup(groupsDTO);
+        model.put("groupId", groupsService.addNewGroup(groupsDTO));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<?> deleteGroup(@PathVariable("id") Long groupId) {
+    public ResponseEntity<?> deleteGroup(@PathVariable("id") Long groupId) throws WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            groupsService.deleteGroup(groupId);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        groupsService.deleteGroup(groupId);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PutMapping(produces = "application/json")
-    public ResponseEntity<?> updateGroup(@RequestBody GroupsDTO groupsDTO) {
+    public ResponseEntity<?> updateGroup(@RequestBody GroupsDTO groupsDTO) throws InvalidDataException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            groupsService.validateGroup(groupsDTO);
-            groupsService.updateGroup(groupsDTO);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        groupsService.validateGroup(groupsDTO);
+        groupsService.updateGroup(groupsDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }

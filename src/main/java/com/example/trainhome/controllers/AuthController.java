@@ -28,35 +28,26 @@ public class AuthController {
 
     @CrossOrigin
     @PostMapping(value = "register", produces = "application/json")
-    public ResponseEntity<?> registration(@RequestBody RegisterRequestDTO requestDTO, @RequestParam(name = "role") String role) {
+    public ResponseEntity<?> registration(
+            @RequestParam(name = "role") String role,
+            @RequestBody RegisterRequestDTO requestDTO) throws InvalidDataException
+    {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            authService.validateRegisterRequestDTO(requestDTO);
-            Person newPerson = authService.addNewPerson(requestDTO, role.equals("ROLE_CLIENT") ? "CLIENT" : "COACH");
-            String token = tokenUtils.generateToken(newPerson.getEmail());
-            if (RoleConfig.valueOf(role.toUpperCase()).toString().equals(RoleConfig.ROLE_COACH.toString())) {
-                authService.fillCoach(requestDTO, newPerson.getId());
-            }
-            model.put("token", token);
-            model.put("role", newPerson.getRoleId().getName());
-            return new ResponseEntity<>(model, HttpStatus.OK);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
+        authService.validateRegisterRequestDTO(requestDTO);
+        Person newPerson = authService.addNewPerson(requestDTO, role.equals("ROLE_CLIENT") ? "CLIENT" : "COACH");
+        String token = tokenUtils.generateToken(newPerson.getEmail());
+        if (RoleConfig.valueOf(role.toUpperCase()).toString().equals(RoleConfig.ROLE_COACH.toString())) {
+            authService.fillCoach(requestDTO, newPerson.getId());
         }
+        model.put("token", token);
+        model.put("role", newPerson.getRoleId().getName());
+        return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(value = "login", produces = "application/json")
-    public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) {
-        Map<Object, Object> model = new HashMap<>();
-        try {
-            Map<Object, Object> map = authService.authorizePerson(authRequestDTO);
-            model.putAll(map);
-            return new ResponseEntity<>(model, HttpStatus.OK);
-        } catch (NoSuchPersonException | InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> login(@RequestBody AuthRequestDTO authRequestDTO) throws NoSuchPersonException, InvalidDataException {
+        Map<Object, Object> map = authService.authorizePerson(authRequestDTO);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }

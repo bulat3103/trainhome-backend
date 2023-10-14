@@ -20,14 +20,9 @@ public class TransactionsController {
 
     @CrossOrigin
     @PostMapping(produces = "application/json")
-    public ResponseEntity<?> createTransaction(@RequestBody TransactionsDTO transactionsDTO) {
+    public ResponseEntity<?> createTransaction(@RequestBody TransactionsDTO transactionsDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            transactionsService.createTransaction(transactionsDTO);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        transactionsService.createTransaction(transactionsDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 

@@ -25,7 +25,7 @@ public class EatCalendarController {
     private EatCalendarService eatCalendarService;
 
     @CrossOrigin
-    @GetMapping(value = "list/dates", produces = "application/json;charset=UTF-8")
+    @GetMapping(value = "/person/dates", produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> getPersonsDates() {
         Map<Object, Object> model = new HashMap<>();
         model.put("dates", eatCalendarService.getPersonDates());
@@ -33,76 +33,48 @@ public class EatCalendarController {
     }
 
     @CrossOrigin
-    @GetMapping(value = "list", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getPersonsRecommendationByDate(@RequestParam("date") String dateS) {
+    @GetMapping(value = "/person/{id}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getPersonsRecommendationByDate(@PathVariable("id") Long personId, @RequestParam("date") String dateS) throws ParseException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            SimpleDateFormat format = new SimpleDateFormat();
-            format.applyPattern("dd.MM.yyyy");
-            List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendationByDate(new Date(format.parse(dateS).getTime()));
-            model.put("recommendations", list);
-        } catch (ParseException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        SimpleDateFormat format = new SimpleDateFormat();
+        format.applyPattern("dd.MM.yyyy");
+        List<EatCalendarDTO> list = eatCalendarService.getPersonRecommendationByDate(personId, new Date(format.parse(dateS).getTime()));
+        model.put("recommendations", list);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @GetMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> getCoachRecommendation(@RequestParam("personId") Long personId, @RequestParam("date") Date date) {
+    @GetMapping(value = "/coach/{id}", produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> getCoachRecommendation(@PathVariable("id") Long personId, @RequestParam("date") Date date) throws RecommendationNotFoundException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            EatCalendarDTO toReturn = eatCalendarService.getCoachRecommendation(personId, date);
-            model.put("recommendation", toReturn);
-        } catch (RecommendationNotFoundException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        EatCalendarDTO toReturn = eatCalendarService.getCoachRecommendation(personId, date);
+        model.put("recommendation", toReturn);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
     @PostMapping(produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> createRecommendation(@RequestBody EatCalendarDTO eatCalendarDTO) {
+    public ResponseEntity<?> createRecommendation(@RequestBody EatCalendarDTO eatCalendarDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            eatCalendarService.validateRecommendation(eatCalendarDTO);
-            Long id = eatCalendarService.createRecommendation(eatCalendarDTO);
-            model.put("id", id);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        }
+        eatCalendarService.validateRecommendation(eatCalendarDTO);
+        Long id = eatCalendarService.createRecommendation(eatCalendarDTO);
+        model.put("id", id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @DeleteMapping
-    public ResponseEntity<?> deleteRecommendation(@RequestParam("id") Long id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> deleteRecommendation(@PathVariable("id") Long id) throws WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            eatCalendarService.deleteRecommendation(id);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        eatCalendarService.deleteRecommendation(id);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 
     @CrossOrigin
-    @PostMapping(value = "update", produces = "application/json;charset=UTF-8")
-    public ResponseEntity<?> updateRecommendation(@RequestBody EatCalendarDTO eatCalendarDTO) {
+    @PutMapping(produces = "application/json;charset=UTF-8")
+    public ResponseEntity<?> updateRecommendation(@RequestBody EatCalendarDTO eatCalendarDTO) throws InvalidDataException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        try {
-            eatCalendarService.updateRecommendation(eatCalendarDTO);
-        } catch (InvalidDataException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.BAD_REQUEST);
-        } catch (WrongPersonException e) {
-            model.put("message", e.getMessage());
-            return new ResponseEntity<>(model, HttpStatus.NOT_ACCEPTABLE);
-        }
+        eatCalendarService.updateRecommendation(eatCalendarDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
 }
