@@ -38,28 +38,6 @@ public class GroupsService {
     @Autowired
     private GroupsRepository groupsRepository;
 
-    public void validateGroup(GroupsDTO groupsDTO) throws InvalidDataException {
-        StringBuilder message = new StringBuilder();
-        boolean valid = true;
-        if (groupsDTO.getName() == null || groupsDTO.getName().equals("")) {
-            message.append("Название не может быть пустым!\n");
-            valid = false;
-        }
-        if (sportSphereRepository.getByName(groupsDTO.getSportSphereName()) == null) {
-            message.append("Такого вида спорта нет!\n");
-            valid = false;
-        }
-        if (groupsDTO.getMaxCount() == null || groupsDTO.getMaxCount() <= 0) {
-            message.append("Количество людей должно быть положительным!\n");
-            valid = false;
-        }
-        if (groupsDTO.getTrainsLeft() == null || groupsDTO.getTrainsLeft() <= 0) {
-            message.append("количество тренировок должно быть положительным!\n");
-            valid = false;
-        }
-        if (!valid) throw new InvalidDataException(message.toString());
-    }
-
     public List<GroupsDTO> getAllGroups() {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         List<GroupsDTO> toReturn = new ArrayList<>();
