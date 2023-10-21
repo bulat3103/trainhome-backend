@@ -5,6 +5,7 @@ import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.RecommendationNotFoundException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.services.EatCalendarService;
+import com.example.trainhome.validators.EatCalendarRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class EatCalendarController {
     @PostMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> createRecommendation(@RequestBody EatCalendarDTO eatCalendarDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        eatCalendarService.validateRecommendation(eatCalendarDTO);
+        EatCalendarRequestValidator.validateCreateRequest(eatCalendarDTO);
         Long id = eatCalendarService.createRecommendation(eatCalendarDTO);
         model.put("id", id);
         return new ResponseEntity<>(model, HttpStatus.OK);

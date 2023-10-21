@@ -31,20 +31,6 @@ public class EatCalendarService {
     @Autowired
     private CoachRepository coachRepository;
 
-    public void validateRecommendation(EatCalendarDTO eatCalendarDTO) throws InvalidDataException {
-        StringBuilder message = new StringBuilder();
-        boolean valid = true;
-        if (eatCalendarDTO.getDate().before(Date.valueOf(LocalDate.now()))) {
-            message.append("Рекомендация не может назначаться на прошедшую дату!");
-            valid = false;
-        }
-        if (eatCalendarDTO.getInfo() == null || eatCalendarDTO.getInfo().equals("")) {
-            message.append("Рекомендация не может быть пустой!");
-            valid = false;
-        }
-        if (!valid) throw new InvalidDataException(message.toString());
-    }
-
     public EatCalendarDTO getCoachRecommendation(Long personId, Date date) throws RecommendationNotFoundException {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         EatCalendar recommendation = eatCalendarRepository.getByPersonIdAndCoachIdAndDate(person.getId(), personId, date);

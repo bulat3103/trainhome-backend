@@ -3,6 +3,7 @@ package com.example.trainhome.controllers;
 import com.example.trainhome.dto.TransactionsDTO;
 import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.services.TransactionsService;
+import com.example.trainhome.validators.TransactionsRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ public class TransactionsController {
     @CrossOrigin
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> createTransaction(@RequestBody TransactionsDTO transactionsDTO) throws InvalidDataException {
+        TransactionsRequestValidator.validateCreateTransaction(transactionsDTO);
         Map<Object, Object> model = new HashMap<>();
         transactionsService.createTransaction(transactionsDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);

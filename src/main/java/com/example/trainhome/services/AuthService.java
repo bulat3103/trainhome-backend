@@ -87,30 +87,4 @@ public class AuthService {
     private Person findByEmail(String email) {
         return personRepository.findByEmail(email);
     }
-
-    public void validateRegisterRequestDTO(RegisterRequestDTO requestDTO) throws InvalidDataException {
-        StringBuilder message = new StringBuilder();
-        boolean valid = true;
-        if (requestDTO.getPassword() == null || requestDTO.getPassword().equals("") || requestDTO.getPassword().length() < 5) {
-            message.append("Пароль должен состоять минимум из 5 символов!");
-            valid = false;
-        }
-        if (requestDTO.getName() == null || requestDTO.getName().equals("")) {
-            message.append("ФИО не может быть пустым!");
-            valid = false;
-        }
-        if (requestDTO.getBirthday() == null || requestDTO.getBirthday().after(Date.valueOf(LocalDate.now()))) {
-            message.append("Некорректная дата рождения!");
-            valid = false;
-        }
-        if (requestDTO.getListPrices() != null) {
-            for (SportPriceDTO dto : requestDTO.getListPrices()) {
-                if (dto.getPrice() <= 0) {
-                    message.append("Стоимость занятий должна быть положительным числом!");
-                    valid = false;
-                }
-            }
-        }
-        if (!valid) throw new InvalidDataException(message.toString());
-    }
 }

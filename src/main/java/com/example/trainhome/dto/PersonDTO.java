@@ -1,6 +1,5 @@
 package com.example.trainhome.dto;
 
-import com.example.trainhome.entities.Image;
 import com.example.trainhome.entities.Person;
 import lombok.AllArgsConstructor;
 import lombok.Data;
