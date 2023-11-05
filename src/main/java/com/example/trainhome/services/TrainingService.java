@@ -37,20 +37,6 @@ public class TrainingService {
     @Autowired
     private GroupsRepository groupsRepository;
 
-    public void validateTraining(TrainingDTO trainingDTO) throws InvalidDataException {
-        StringBuilder message = new StringBuilder();
-        boolean valid = true;
-        if (trainingDTO.getTrainingDate().before(Date.valueOf(LocalDate.now()))) {
-            message.append("Тренировка не может назначаться на прошедшую дату!");
-            valid = false;
-        }
-        if (trainingDTO.getLink() == null || trainingDTO.getLink().equals("")) {
-            message.append("Ссылка на тренировку не может быть пустой!");
-            valid = false;
-        }
-        if (!valid) throw new InvalidDataException(message.toString());
-    }
-
     public Long addTraining(TrainingDTO trainingDTO) {
         Person person = personRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName());
         Training training = new Training(

@@ -1,7 +1,9 @@
 package com.example.trainhome.controllers;
 
 import com.example.trainhome.dto.CoachSearchDTO;
+import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.services.CoachService;
+import com.example.trainhome.validators.CoachRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +21,8 @@ public class CoachController {
 
     @CrossOrigin
     @GetMapping(produces = "application/json")
-    public ResponseEntity<?> getFilteredCoaches (@RequestBody CoachSearchDTO coachSearchDTO) {
+    public ResponseEntity<?> getFilteredCoaches (@RequestBody CoachSearchDTO coachSearchDTO) throws InvalidDataException {
+        CoachRequestValidator.validateCoachDto(coachSearchDTO);
         Map<Object, Object> model = new HashMap<>();
         model.put("coaches", coachService.getFilteredCoaches(coachSearchDTO));
         return new ResponseEntity<>(model, HttpStatus.OK);

@@ -5,6 +5,7 @@ import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.NoSuchPersonException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.services.GroupsService;
+import com.example.trainhome.validators.GroupsRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +49,7 @@ public class GroupsController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> createGroup(@RequestBody GroupsDTO groupsDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        groupsService.validateGroup(groupsDTO);
+        GroupsRequestValidator.validateCreateRequest(groupsDTO);
         model.put("groupId", groupsService.addNewGroup(groupsDTO));
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
@@ -65,7 +66,7 @@ public class GroupsController {
     @PutMapping(produces = "application/json")
     public ResponseEntity<?> updateGroup(@RequestBody GroupsDTO groupsDTO) throws InvalidDataException, WrongPersonException {
         Map<Object, Object> model = new HashMap<>();
-        groupsService.validateGroup(groupsDTO);
+        GroupsRequestValidator.validateCreateRequest(groupsDTO);
         groupsService.updateGroup(groupsDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }

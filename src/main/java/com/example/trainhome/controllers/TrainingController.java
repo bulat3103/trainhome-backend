@@ -4,6 +4,7 @@ import com.example.trainhome.exceptions.InvalidDataException;
 import com.example.trainhome.exceptions.WrongPersonException;
 import com.example.trainhome.dto.TrainingDTO;
 import com.example.trainhome.services.TrainingService;
+import com.example.trainhome.validators.TrainingRequestValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class TrainingController {
     @PostMapping(produces = "application/json")
     public ResponseEntity<?> createTraining(@RequestBody TrainingDTO trainingDTO) throws InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        trainingService.validateTraining(trainingDTO);
+        TrainingRequestValidator.validateCreateRequest(trainingDTO);
         Long id = trainingService.addTraining(trainingDTO);
         model.put("id", id);
         return new ResponseEntity<>(model, HttpStatus.OK);
@@ -42,7 +43,7 @@ public class TrainingController {
     @PutMapping(produces = "application/json;charset=UTF-8")
     public ResponseEntity<?> updateTraining(@RequestBody TrainingDTO trainingDTO) throws WrongPersonException, InvalidDataException {
         Map<Object, Object> model = new HashMap<>();
-        trainingService.validateTraining(trainingDTO);
+        TrainingRequestValidator.validateCreateRequest(trainingDTO);
         trainingService.updateTraining(trainingDTO);
         return new ResponseEntity<>(model, HttpStatus.OK);
     }
